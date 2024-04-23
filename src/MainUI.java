@@ -14,14 +14,17 @@ public class MainUI {
         homeButton.addActionListener(e -> {
             Card.removeAll();
             Card.add(HomePanel);
+            Card.revalidate();
         });
         bookingsButton.addActionListener(e -> {
             Card.removeAll();
             Card.add(Bookings);
+            Card.revalidate();
         });
         roomsButton.addActionListener(e -> {
             Card.removeAll();
             Card.add(Rooms);
+            Card.revalidate();
         });
     }
     public JPanel getMainPanel() {

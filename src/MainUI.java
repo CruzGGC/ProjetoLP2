@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainUI {
     private JPanel MainPanel;
@@ -13,26 +11,20 @@ public class MainUI {
     private JPanel Rooms;
 
     public MainUI() {
-        homeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Card.removeAll();
-                Card.add(HomePanel);
-            }
+        homeButton.addActionListener(e -> {
+            Card.removeAll();
+            Card.add(HomePanel);
         });
-        bookingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Card.removeAll();
-                Card.add(Bookins);
-            }
+        bookingsButton.addActionListener(e -> {
+            Card.removeAll();
+            Card.add(Bookins);
         });
-        roomsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Card.removeAll();
-                Card.add(Rooms);
-            }
+        roomsButton.addActionListener(e -> {
+            Card.removeAll();
+            Card.add(Rooms);
         });
+    }
+    public JPanel getMainPanel() {
+        return MainPanel;
     }
 }

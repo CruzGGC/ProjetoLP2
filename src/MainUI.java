@@ -15,16 +15,19 @@ public class MainUI {
             Card.removeAll();
             Card.add(HomePanel);
             Card.revalidate();
+            Card.repaint();
         });
         bookingsButton.addActionListener(e -> {
             Card.removeAll();
             Card.add(Bookings);
             Card.revalidate();
+            Card.repaint();
         });
         roomsButton.addActionListener(e -> {
             Card.removeAll();
             Card.add(Rooms);
             Card.revalidate();
+            Card.repaint();
         });
     }
     public JPanel getMainPanel() {

@@ -9,6 +9,7 @@ public class MainUI {
     private JPanel HomePanel;
     private JPanel Bookings;
     private JPanel Rooms;
+    private JButton boasButton;
 
     public MainUI() {
         homeButton.addActionListener(e -> {

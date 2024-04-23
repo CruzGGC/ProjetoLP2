@@ -10,6 +10,7 @@ public class MainUI {
     private JPanel Bookings;
     private JPanel Rooms;
     private JButton ceceugeuButton;
+    private JButton boasButton;
 
     public MainUI() {
         homeButton.addActionListener(e -> {

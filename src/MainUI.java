@@ -1,6 +1,12 @@
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainUI {
+
+    private RoomTableCreator tableCreator = new RoomTableCreator();
+    private String filePath = "RoomTable/RT.csv";
+
     private JPanel MainPanel;
     private JButton homeButton;
     private JButton bookingsButton;
@@ -9,30 +15,78 @@ public class MainUI {
     private JPanel HomePanel;
     private JPanel Bookings;
     private JPanel Rooms;
-    private JButton ceceugeuButton;
-    private JButton boasButton;
+    private JPanel RoomsCard;
+    private JPanel Table;
+    private JPanel RoomDetail;
+    private JTable RoomTable;
+    private JButton saveButton;
+    private JPanel RoomDetailList;
+    private JPanel SaveCancel;
+    private JButton cancelButton;
+    private JTextField RNField;
+    private JTextField ACField;
+    private JTextField CCField;
+    private JTextField PField;
+    private JScrollPane TBScrollPane;
 
     public MainUI() {
-        homeButton.addActionListener(e -> {
-            Card.removeAll();
-            Card.add(HomePanel);
-            Card.revalidate();
-            Card.repaint();
+
+        Filter filter = new Filter();
+        filter.applyFilters(RNField, ACField, CCField, PField);
+
+        RoomTableCreator tableCreator = new RoomTableCreator();
+        tableCreator.createRoomTable(RoomTable);
+
+        homeButton.addActionListener(e -> switchPanel(HomePanel));
+        bookingsButton.addActionListener(e -> switchPanel(Bookings));
+        roomsButton.addActionListener(e -> switchPanel(Rooms));
+
+        RoomTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    setRoomDetailsFromSelectedRow();
+                    switchPanel(RoomDetail);
+                }
+            }
         });
-        bookingsButton.addActionListener(e -> {
-            Card.removeAll();
-            Card.add(Bookings);
-            Card.revalidate();
-            Card.repaint();
-        });
-        roomsButton.addActionListener(e -> {
-            Card.removeAll();
-            Card.add(Rooms);
-            Card.revalidate();
-            Card.repaint();
+
+        cancelButton.addActionListener(e -> switchPanel(Table));
+        saveButton.addActionListener(e -> {
+            updateRoomTableFromFields();
+            tableCreator.writeTableDataToCSV(RoomTable, filePath);
+            switchPanel(Table);
         });
     }
+
+    private void switchPanel(JPanel panel) {
+        Card.removeAll();
+        Card.add(panel);
+        Card.revalidate();
+        Card.repaint();
+    }
+
+    private void setRoomDetailsFromSelectedRow() {
+        int row = RoomTable.getSelectedRow();
+        RNField.setText(RoomTable.getValueAt(row, 0).toString());
+        ACField.setText(RoomTable.getValueAt(row, 1).toString());
+        CCField.setText(RoomTable.getValueAt(row, 2).toString());
+        PField.setText(RoomTable.getValueAt(row, 3).toString());
+    }
+
+    private void updateRoomTableFromFields() {
+        int row = RoomTable.getSelectedRow();
+        RoomTable.setValueAt(Integer.parseInt(RNField.getText()), row, 0);
+        RoomTable.setValueAt(Integer.parseInt(ACField.getText()), row, 1);
+        RoomTable.setValueAt(Integer.parseInt(CCField.getText()), row, 2);
+        RoomTable.setValueAt(Float.parseFloat(PField.getText()), row, 3);
+    }
+
     public JPanel getMainPanel() {
         return MainPanel;
+    }
+
+    public JTable getRoomTable() {
+        return RoomTable;
     }
 }

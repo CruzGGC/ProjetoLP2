@@ -24,5 +24,9 @@ public class Main {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        RoomTableCreator tableCreator = new RoomTableCreator();
+        String filePath = "src/RoomTable/RT.csv";
+        tableCreator.loadTableDataFromCSV(ui.getRoomTable(), filePath);
     }
 }

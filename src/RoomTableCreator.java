@@ -8,28 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class RoomTableCreator {
-    public void createRoomTable(JTable RoomTable) {
-        // Data for the table
-        Object[][] data = {
-                {102, 1, 0, 30.00},
-                {201, 2, 0, 34.00},
-                {202, 2, 1, 40.00},
-                {203, 2, 1, 40.00},
-                {204, 2, 1, 45.00}
-        };
-        // Set the model for table1
-        assert RoomTable != null;
-        RoomTable.setModel(new DefaultTableModel(
-                data,
-                new String[]{"Rooms", "Adults Capacity", "Children Capacity", "Price"}
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // This causes all cells to be not editable
-                return false;
-            }
-        });
-    }
 
     public void writeTableDataToCSV(JTable table, String filePath) {
         try {

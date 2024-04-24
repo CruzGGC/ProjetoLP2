@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,7 +28,14 @@ public class Main {
         frame.setVisible(true);
 
         RoomTableCreator tableCreator = new RoomTableCreator();
-        String filePath = "src/RoomTable/RT.csv";
+        String filePath = "RoomTable/RT.csv";
         tableCreator.loadTableDataFromCSV(ui.getRoomTable(), filePath);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                tableCreator.writeTableDataToCSV(ui.getRoomTable(), filePath);
+            }
+        });
     }
 }

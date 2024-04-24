@@ -4,8 +4,8 @@ import java.awt.event.MouseEvent;
 
 public class MainUI {
 
-    private RoomTableCreator tableCreator = new RoomTableCreator();
-    private String filePath = "RoomTable/RT.csv";
+    private final RoomTableCreator tableCreator = new RoomTableCreator();
+    private final String filePath = "RoomTable/RT.csv";
 
     private JPanel MainPanel;
     private JButton homeButton;
@@ -33,9 +33,6 @@ public class MainUI {
 
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);
-
-        RoomTableCreator tableCreator = new RoomTableCreator();
-        tableCreator.createRoomTable(RoomTable);
 
         homeButton.addActionListener(e -> switchPanel(HomePanel));
         bookingsButton.addActionListener(e -> switchPanel(Bookings));

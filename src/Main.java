@@ -28,7 +28,7 @@ public class Main {
         frame.setVisible(true);
 
         RoomTableCreator tableCreator = new RoomTableCreator();
-        String filePath = "RoomTable/RT.csv";
+        String filePath = "src/RoomTable/RT.csv";
         tableCreator.loadTableDataFromCSV(ui.getRoomTable(), filePath);
 
         frame.addWindowListener(new WindowAdapter() {

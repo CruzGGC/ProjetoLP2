@@ -16,7 +16,7 @@ public class MainUI {
     private JPanel Bookings;
     private JPanel Rooms;
     private JPanel RoomsCard;
-    private JPanel Table;
+    private JPanel RoomTableJP;
     private JPanel RoomDetail;
     private JTable RoomTable;
     private JButton saveButton;
@@ -29,10 +29,10 @@ public class MainUI {
     private JTextField PField;
     private JScrollPane TBScrollPane;
     private JTable BookingsTable;
-    private JPanel table;
+    private JPanel BookingsTableJP;
     private JPanel BookingsDetail;
-    private JPanel aa;
-    private JScrollPane Scroll;
+    private JPanel BookingsDetailList;
+    private JScrollPane BTScroll;
     private JTextField GFNField;
     private JTextField GLNField;
     private JTextField RField;
@@ -43,7 +43,6 @@ public class MainUI {
     private JButton SaveButton;
     private JPanel Savecancel;
     private JPanel BookingsCard;
-    private JPanel BookingsDetailList;
 
     public MainUI() {
 
@@ -64,11 +63,11 @@ public class MainUI {
             }
         });
 
-        cancelButton.addActionListener(e -> switchPanel(Table));
+        cancelButton.addActionListener(e -> switchPanel(RoomTableJP));
         saveButton.addActionListener(e -> {
             updateRoomTableFromFields();
             tableCreator.writeTableDataToCSV(RoomTable, filePath);
-            switchPanel(Table);
+            switchPanel(RoomTableJP);
         });
     }
 

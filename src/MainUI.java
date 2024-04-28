@@ -28,6 +28,10 @@ public class MainUI {
     private JTextField CCField;
     private JTextField PField;
     private JScrollPane TBScrollPane;
+    private JPanel BookingsCard;
+    private JTable BookingsTable;
+    private JPanel table;
+    private JPanel BookingsDetailList;
 
     public MainUI() {
 

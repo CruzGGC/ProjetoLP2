@@ -3,6 +3,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
 public class RoomBookingSystem {
 
     public List<Room> searchAvailableRooms(List<Room> rooms, List<Booking> bookings, int numberOfAdults, int numberOfChildren, Date checkInDate, Date checkOutDate, int canceledStatus) {
@@ -19,3 +20,4 @@ public class RoomBookingSystem {
             .collect(Collectors.toList());
     }
 }
+*/

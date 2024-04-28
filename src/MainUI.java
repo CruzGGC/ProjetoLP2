@@ -28,9 +28,21 @@ public class MainUI {
     private JTextField CCField;
     private JTextField PField;
     private JScrollPane TBScrollPane;
-    private JPanel BookingsCard;
     private JTable BookingsTable;
     private JPanel table;
+    private JPanel BookingsDetail;
+    private JPanel aa;
+    private JScrollPane Scroll;
+    private JTextField GFNField;
+    private JTextField GLNField;
+    private JTextField RField;
+    private JTextField CIField;
+    private JTextField COField;
+    private JTextField SField;
+    private JButton CancelButton;
+    private JButton SaveButton;
+    private JPanel Savecancel;
+    private JPanel BookingsCard;
     private JPanel BookingsDetailList;
 
     public MainUI() {

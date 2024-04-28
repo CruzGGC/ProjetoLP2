@@ -4,8 +4,8 @@ import java.awt.event.MouseEvent;
 
 public class MainUI {
 
-    private final RoomTableCreator tableCreator = new RoomTableCreator();
-    private final String filePath = "RoomTable/RT.csv";
+    private final TableCreator roomtableCreator = new TableCreator();
+    private final String roomfilePath = "Tables/RT.csv";
 
     private JPanel MainPanel;
     private JButton homeButton;
@@ -66,7 +66,7 @@ public class MainUI {
         cancelButton.addActionListener(e -> switchPanel(RoomTableJP));
         saveButton.addActionListener(e -> {
             updateRoomTableFromFields();
-            tableCreator.writeTableDataToCSV(RoomTable, filePath);
+            roomtableCreator.writeTableDataToCSV(RoomTable, roomfilePath);
             switchPanel(RoomTableJP);
         });
     }
@@ -100,5 +100,9 @@ public class MainUI {
 
     public JTable getRoomTable() {
         return RoomTable;
+    }
+
+    public JTable getBookingsTable() {
+        return BookingsTable;
     }
 }

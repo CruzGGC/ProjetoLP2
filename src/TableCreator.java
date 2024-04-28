@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class RoomTableCreator {
+public class TableCreator {
 
     public void writeTableDataToCSV(JTable table, String filePath) {
         try {
@@ -73,7 +73,12 @@ public class RoomTableCreator {
             e.printStackTrace();
         }
 
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // This causes all cells to be not editable
+            }
+        };
         table.setModel(model);
     }
 

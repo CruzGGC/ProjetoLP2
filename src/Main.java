@@ -27,14 +27,22 @@ public class Main {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        RoomTableCreator tableCreator = new RoomTableCreator();
-        String filePath = "src/RoomTable/RT.csv";
-        tableCreator.loadTableDataFromCSV(ui.getRoomTable(), filePath);
+        // Load table data from CSV file, RoomTable
+        TableCreator roomtableCreator = new TableCreator();
+        String roomfilePath = "src/Tables/RT.csv";
+        roomtableCreator.loadTableDataFromCSV(ui.getRoomTable(), roomfilePath);
+
+        // Load table data from CSV file, BookingsTable
+
+        TableCreator bookingstableCreator = new TableCreator();
+        String bookingsfilePath = "src/Tables/BT.csv";
+        bookingstableCreator.loadTableDataFromCSV(ui.getBookingsTable(), bookingsfilePath);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                tableCreator.writeTableDataToCSV(ui.getRoomTable(), filePath);
+                roomtableCreator.writeTableDataToCSV(ui.getRoomTable(), roomfilePath);
+                bookingstableCreator.writeTableDataToCSV(ui.getBookingsTable(), bookingsfilePath);
             }
         });
     }

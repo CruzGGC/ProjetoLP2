@@ -1,6 +1,7 @@
 import com.github.lgooddatepicker.components.DatePicker;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -42,7 +43,6 @@ public class MainUI {
     private JScrollPane BTScroll;
     private JTextField FNField;
     private JTextField LNField;
-    private JTextField RField;
     private JTextField AField;
     private JButton BookingsGARButton;
     private JButton BookingsBRButton;
@@ -59,9 +59,27 @@ public class MainUI {
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);
 
-        homeButton.addActionListener(e -> switchPanel(HomePanel));
-        bookingsButton.addActionListener(e -> switchPanel(Bookings));
-        roomsButton.addActionListener(e -> switchPanel(Rooms));
+        homeButton.addActionListener(e -> {
+            switchPanel(HomePanel);
+            RoomTable.revalidate();
+            RoomTable.repaint();
+            BookingsTable.revalidate();
+            BookingsTable.repaint();
+        });
+        bookingsButton.addActionListener(e -> {
+            switchPanel(Bookings);
+            RoomTable.revalidate();
+            RoomTable.repaint();
+            BookingsTable.revalidate();
+            BookingsTable.repaint();
+        });
+        roomsButton.addActionListener(e -> {
+            switchPanel(Rooms);
+            RoomTable.revalidate();
+            RoomTable.repaint();
+            BookingsTable.revalidate();
+            BookingsTable.repaint();
+        });
 
         RoomTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -73,11 +91,25 @@ public class MainUI {
             }
         });
 
-        RoomcancelButton.addActionListener(e -> switchPanel(RoomTableJP));
-        RoomsaveButton.addActionListener(e -> {
-            updateRoomTableFromFields();
-            roomtableCreator.writeTableDataToCSV(RoomTable, roomfilePath);
+        RoomcancelButton.addActionListener(e -> {
+            // Clear all the fields
+            RNField.setText("");
+            ACField.setText("");
+            CCField.setText("");
+            PField.setText("");
+
             switchPanel(RoomTableJP);
+        });
+        RoomsaveButton.addActionListener(e -> {
+            if (RNField.getText().isEmpty() || ACField.getText().isEmpty() || CCField.getText().isEmpty() || PField.getText().isEmpty()) {
+                // If any field is empty, show a message dialog
+                JOptionPane.showMessageDialog(MainPanel, "Fill the form", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                updateRoomTableFromFields();
+                roomtableCreator.writeTableDataToCSV(RoomTable, roomfilePath);
+                switchPanel(RoomTableJP);
+            }
+
         });
 
         BookingsTable.addMouseListener(new MouseAdapter() {
@@ -90,38 +122,88 @@ public class MainUI {
             }
         });
 
-        BookingsCancelButton.addActionListener(e -> switchPanel(BookingsTableJP));
+        BookingsCancelButton.addActionListener(e -> {
+            // Clear all the fields
+            FNField.setText("");
+            LNField.setText("");
+            CIField.setDate(null);
+            COField.setDate(null);
+            AField.setText("");
+            CField.setText("");
+
+            // Clear the JLabel
+            BookingsRoomStatus.setText("");
+            switchPanel(BookingsTableJP);
+        });
+
         BookingsGARButton.addActionListener(e -> {
-            // Load data from CSV files
-            List<Room> rooms = roomtableCreator.loadRoomsFromCSV(roomfilePath);
-            List<Booking> bookings = bookingstableCreator.loadBookingsFromCSV(bookingsfilePath);
-
-            // Create an instance of RoomBookingSystem
-            RoomBookingSystem roomBookingSystem = new RoomBookingSystem();
-
-            // Get the input values from the UI
-            int numberOfAdults = Integer.parseInt(AField.getText());
-            int numberOfChildren = Integer.parseInt(CField.getText());
-            LocalDate checkInDate = CIField.getDate();
-            LocalDate checkOutDate = COField.getDate();
-            int canceledStatus = 0; // Assuming 0 is the status for canceled bookings
-
-            // Use the searchAvailableRooms method to find the available rooms
-            List<Room> availableRooms = roomBookingSystem.searchAvailableRooms(rooms, bookings, numberOfAdults, numberOfChildren, checkInDate, checkOutDate, canceledStatus);
-
-            // Display the result in the UI
-            if (!availableRooms.isEmpty()) {
-                Room room = availableRooms.get(0); // Get the first available room
-                BookingsRoomStatus.setText("Room " + room.getId() + " is available");
-
+            // Check if the AField and CField are filled
+            if (AField.getText().isEmpty() || CField.getText().isEmpty()) {
+                // If any field is empty, show a message dialog
+                JOptionPane.showMessageDialog(MainPanel, "Fill the form", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                BookingsRoomStatus.setText("No rooms available");
+                // If all fields are filled, proceed with the existing logic
+                // Load data from CSV files
+                List<Room> rooms = roomtableCreator.loadRoomsFromCSV(roomfilePath);
+                List<Booking> bookings = bookingstableCreator.loadBookingsFromCSV(bookingsfilePath);
+
+                // Create an instance of RoomBookingSystem
+                RoomBookingSystem roomBookingSystem = new RoomBookingSystem();
+
+                // Get the input values from the UI
+                int numberOfAdults = Integer.parseInt(AField.getText());
+                int numberOfChildren = Integer.parseInt(CField.getText());
+                LocalDate checkInDate = CIField.getDate();
+                LocalDate checkOutDate = COField.getDate();
+                int canceledStatus = 0; // Assuming 0 is the status for canceled bookings
+
+                // Use the searchAvailableRooms method to find the available rooms
+                List<Room> availableRooms = roomBookingSystem.searchAvailableRooms(rooms, bookings, numberOfAdults, numberOfChildren, checkInDate, checkOutDate, canceledStatus);
+
+                // Display the result in the UI
+                if (!availableRooms.isEmpty()) {
+                    Room room = availableRooms.get(0); // Get the first available room
+                    BookingsRoomStatus.setText("Room " + room.getId() + " is available. Price: " + room.getPrice());
+
+                    // Update the Room column of the selected row in the BookingsTable with the room details
+                    int selectedRow = BookingsTable.getSelectedRow();
+                    if (selectedRow >= 0) { // Check if a row is actually selected
+                        DefaultTableModel model = (DefaultTableModel) BookingsTable.getModel();
+                        model.setValueAt(room.getId(), selectedRow, 2); // 2 is the index of the Room column
+
+                        // Write the updated table data back to the BT.csv file
+                        bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
+                    }
+                } else {
+                    BookingsRoomStatus.setText("No rooms available");
+                }
             }
         });
+
         BookingsBRButton.addActionListener(e -> {
-            updateBookingsTableFromFields();
-            bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
-            switchPanel(BookingsTableJP);
+            // Check if all required fields are filled
+            if (FNField.getText().isEmpty() || LNField.getText().isEmpty() || CIField.getDate() == null || COField.getDate() == null) {
+                // If any field is empty, show a message dialog
+                JOptionPane.showMessageDialog(MainPanel, "Fill all the Fields!", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                // Check if a room has been selected
+                int selectedRow = BookingsTable.getSelectedRow();
+                if (selectedRow >= 0) { // Check if a row is actually selected
+                    Object roomValue = BookingsTable.getValueAt(selectedRow, 2); // 2 is the index of the Room column
+                    if (roomValue == null || roomValue.toString().isEmpty()) {
+                        // If no room has been selected, show a message dialog
+                        JOptionPane.showMessageDialog(MainPanel, "Get Available Rooms First!", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        // If all fields are filled and a room has been selected, proceed with the existing logic
+                        updateBookingsTableFromFields();
+                        bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
+                        switchPanel(BookingsTableJP);
+                    }
+                } else {
+                    // If no row has been selected, show a message dialog
+                    JOptionPane.showMessageDialog(MainPanel, "Select a booking first!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
 
 
@@ -155,7 +237,6 @@ public class MainUI {
         int row = BookingsTable.getSelectedRow();
         FNField.setText(getValueAt(BookingsTable, row, 0));
         LNField.setText(getValueAt(BookingsTable, row, 1));
-        //RField.setText(getValueAt(BookingsTable, row, 2));
         CIField.setDate(getDateAt(BookingsTable, row, 3));
         COField.setDate(getDateAt(BookingsTable, row, 4));
     }

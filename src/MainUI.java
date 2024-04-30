@@ -1,9 +1,9 @@
+import com.github.lgooddatepicker.components.DatePicker;
+
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class MainUI {
@@ -43,8 +43,6 @@ public class MainUI {
     private JTextField FNField;
     private JTextField LNField;
     private JTextField RField;
-    private JTextField CIField;
-    private JTextField COField;
     private JTextField AField;
     private JButton BookingsGARButton;
     private JButton BookingsBRButton;
@@ -53,6 +51,8 @@ public class MainUI {
     private JTextField CField;
     private JLabel BookingsRoomStatus;
     private JButton BookingsCancelButton;
+    private DatePicker CIField;
+    private DatePicker COField;
 
     public MainUI() {
 
@@ -92,32 +92,38 @@ public class MainUI {
 
         BookingsCancelButton.addActionListener(e -> switchPanel(BookingsTableJP));
         BookingsGARButton.addActionListener(e -> {
+            // Load data from CSV files
+            List<Room> rooms = roomtableCreator.loadRoomsFromCSV(roomfilePath);
+            List<Booking> bookings = bookingstableCreator.loadBookingsFromCSV(bookingsfilePath);
+
+            // Create an instance of RoomBookingSystem
             RoomBookingSystem roomBookingSystem = new RoomBookingSystem();
 
-            // Read rooms and bookings data from CSV files
-            List<Room> rooms = TableCreator.readRoomsFromCSV(roomfilePath);
-            List<Booking> bookings = TableCreator.readBookingsFromCSV(bookingsfilePath);
-
-            // Get the number of adults and children from the input fields
+            // Get the input values from the UI
             int numberOfAdults = Integer.parseInt(AField.getText());
             int numberOfChildren = Integer.parseInt(CField.getText());
+            LocalDate checkInDate = CIField.getDate();
+            LocalDate checkOutDate = COField.getDate();
+            int canceledStatus = 0; // Assuming 0 is the status for canceled bookings
 
-            // Define the check-in and check-out dates and the canceled status
-            Date checkInDate = parseDate(CIField.getText());
-            Date checkOutDate = parseDate(COField.getText());
-            int canceledStatus = 0; // Define the canceled status
-
-            // Search for available rooms
+            // Use the searchAvailableRooms method to find the available rooms
             List<Room> availableRooms = roomBookingSystem.searchAvailableRooms(rooms, bookings, numberOfAdults, numberOfChildren, checkInDate, checkOutDate, canceledStatus);
 
-            // Display the available rooms
-            displayAvailableRooms(availableRooms);
+            // Display the result in the UI
+            if (!availableRooms.isEmpty()) {
+                Room room = availableRooms.get(0); // Get the first available room
+                BookingsRoomStatus.setText("Room " + room.getId() + " is available");
+
+            } else {
+                BookingsRoomStatus.setText("No rooms available");
+            }
         });
         BookingsBRButton.addActionListener(e -> {
             updateBookingsTableFromFields();
             bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
             switchPanel(BookingsTableJP);
         });
+
 
     }
 
@@ -150,8 +156,8 @@ public class MainUI {
         FNField.setText(getValueAt(BookingsTable, row, 0));
         LNField.setText(getValueAt(BookingsTable, row, 1));
         //RField.setText(getValueAt(BookingsTable, row, 2));
-        CIField.setText(getValueAt(BookingsTable, row, 3));
-        COField.setText(getValueAt(BookingsTable, row, 4));
+        CIField.setDate(getDateAt(BookingsTable, row, 3));
+        COField.setDate(getDateAt(BookingsTable, row, 4));
     }
 
     private void updateBookingsTableFromFields() {
@@ -160,8 +166,8 @@ public class MainUI {
         if (row >= 0) { // Check if a row is actually selected
             BookingsTable.setValueAt(FNField.getText(), row, 0);
             BookingsTable.setValueAt(LNField.getText(), row, 1);
-            BookingsTable.setValueAt(CIField.getText(), row, 3);
-            BookingsTable.setValueAt(COField.getText(), row, 4);
+            BookingsTable.setValueAt(CIField.getDate(), row, 3);
+            BookingsTable.setValueAt(COField.getDate(), row, 4);
             BookingsTable.setValueAt(AField.getText(), row, 5);
         }
     }
@@ -183,20 +189,9 @@ public class MainUI {
         return BookingsTable;
     }
 
-    public Date parseDate(String date) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private LocalDate getDateAt(JTable table, int row, int column) {
+        Object value = table.getValueAt(row, column);
+        return (value != null) ? LocalDate.parse(value.toString()) : null;
     }
 
-    public void displayAvailableRooms(List<Room> rooms) {
-        StringBuilder roomsList = new StringBuilder();
-        for (Room room : rooms) {
-            roomsList.append(room.toString()).append("\n");
-        }
-        JOptionPane.showMessageDialog(null, roomsList.toString());
-    }
 }

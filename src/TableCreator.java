@@ -1,13 +1,14 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
 
 public class TableCreator {
 
@@ -87,63 +88,51 @@ public class TableCreator {
         };
         table.setModel(model);
     }
-    public static List<Room> readRoomsFromCSV(String filePath) {
+
+    public List<Room> loadRoomsFromCSV(String filePath) {
         List<Room> rooms = new ArrayList<>();
-        TableCreator tableCreator = new TableCreator();
-        JTable table = new JTable();
-        tableCreator.loadTableDataFromCSV(table, filePath);
-
-        for (int i = 0; i < table.getRowCount(); i++) {
-            int roomNumber = Integer.parseInt(table.getValueAt(i, 0).toString());
-            int adultsCapacity = Integer.parseInt(table.getValueAt(i, 1).toString());
-            int childrenCapacity = Integer.parseInt(table.getValueAt(i, 2).toString());
-            double price = Double.parseDouble(table.getValueAt(i, 3).toString());
-
-            Room room = new Room(roomNumber, adultsCapacity, childrenCapacity, price);
-            rooms.add(room);
+        try {
+            BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
+            String row;
+            csvReader.readLine(); // Skip the header
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                int id = Integer.parseInt(data[0]);
+                int adultsCapacity = Integer.parseInt(data[1]);
+                int childrenCapacity = Integer.parseInt(data[2]);
+                double price = Double.parseDouble(data[3]);
+                rooms.add(new Room(id, adultsCapacity, childrenCapacity, price));
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
         return rooms;
     }
 
-    public static List<Booking> readBookingsFromCSV(String filePath) {
+    public List<Booking> loadBookingsFromCSV(String filePath) {
         List<Booking> bookings = new ArrayList<>();
-        TableCreator tableCreator = new TableCreator();
-        JTable table = new JTable();
-        tableCreator.loadTableDataFromCSV(table, filePath);
-
-        for (int i = 0; i < table.getRowCount(); i++) {
-            // Check if the row is empty
-            if (table.getValueAt(i, 0) == null || table.getValueAt(i, 0).toString().trim().isEmpty()) {
-                continue; // Skip this iteration if the row is empty
-            }
-
-            String guestFirstName = table.getValueAt(i, 0).toString();
-            String guestLastName = table.getValueAt(i, 1).toString();
-            int roomId = Integer.parseInt(table.getValueAt(i, 2).toString());
-            Date checkInDate = parseDate(table.getValueAt(i, 3).toString());
-            Date checkOutDate = parseDate(table.getValueAt(i, 4).toString());
-            int statusId = Integer.parseInt(table.getValueAt(i, 5).toString());
-
-            Booking booking = new Booking(guestFirstName, guestLastName, roomId, checkInDate, checkOutDate, statusId);
-            bookings.add(booking);
-        }
-
-        return bookings;
-    }
-
-    public static Date parseDate(String date) {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+            BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
+            String row;
+            csvReader.readLine(); // Skip the header
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                if (data.length > 0) {
+                    String guestFirstName = !data[0].isEmpty() ? data[0] : "N/A";
+                    String guestLastName = data.length > 1 && !data[1].isEmpty() ? data[1] : "N/A";
+                    int roomId = data.length > 2 && !data[2].isEmpty() ? Integer.parseInt(data[2]) : 0;
+                    LocalDate checkInDate = data.length > 3 && !data[3].isEmpty() ? LocalDate.parse(data[3]) : null;
+                    LocalDate checkOutDate = data.length > 4 && !data[4].isEmpty() ? LocalDate.parse(data[4]) : null;
+                    int statusId = data.length > 5 && !data[5].isEmpty() ? Integer.parseInt(data[5]) : 0;
 
-    public static void displayAvailableRooms(List<Room> rooms) {
-        for (Room room : rooms) {
-            System.out.println(room);
+                    bookings.add(new Booking(guestFirstName, guestLastName, roomId, checkInDate, checkOutDate, statusId));
+                }
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return bookings;
     }
 }

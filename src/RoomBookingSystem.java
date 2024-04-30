@@ -1,21 +1,20 @@
+import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RoomBookingSystem {
 
-    public List<Room> searchAvailableRooms(List<Room> rooms, List<Booking> bookings, int numberOfAdults, int numberOfChildren, Date checkInDate, Date checkOutDate, int canceledStatus) {
+    public List<Room> searchAvailableRooms(List<Room> rooms, List<Booking> bookings, int numberOfAdults, int numberOfChildren, LocalDate checkInDate, LocalDate checkOutDate, int canceledStatus) {
         return rooms.stream()
-            .filter(Room -> Room.getAdultsCapacity() >= numberOfAdults && (Room.getAdultsCapacity() + Room.getChildrenCapacity()) >= (numberOfAdults + numberOfChildren))
-            .filter(Room -> bookings.stream().noneMatch(Booking -> Booking.getRoomId() == Room.getRoomNumber() &&
-                                                          (checkInDate.compareTo(Booking.getCheckInDate()) >= 0 &&
-                                                           checkInDate.compareTo(Booking.getCheckOutDate()) <= 0) ||
-                                                          (checkOutDate.compareTo(Booking.getCheckInDate()) >= 1 &&
-                                                           checkOutDate.compareTo(Booking.getCheckOutDate()) <= 0) &&
-                                                          Booking.getRoomId() != canceledStatus))
-
-            .sorted(Comparator.comparing(Room::getPrice))
-            .collect(Collectors.toList());
+                .filter(room -> room.getAdultsCapacity() >= numberOfAdults && (room.getAdultsCapacity() + room.getChildrenCapacity()) >= (numberOfAdults + numberOfChildren))
+                .filter(room -> bookings.stream().noneMatch(booking -> booking.getRoomId() == room.getId() &&
+                        (checkInDate.isAfter(booking.getCheckInDate()) || checkInDate.isEqual(booking.getCheckInDate())) &&
+                        (checkInDate.isBefore(booking.getCheckOutDate()) || checkInDate.isEqual(booking.getCheckOutDate())) ||
+                        (checkOutDate.isAfter(booking.getCheckInDate()) || checkOutDate.isEqual(booking.getCheckInDate())) &&
+                                (checkOutDate.isBefore(booking.getCheckOutDate()) || checkOutDate.isEqual(booking.getCheckOutDate())) &&
+                                booking.getStatusId() != canceledStatus))
+                .sorted(Comparator.comparing(Room::getPrice))
+                .collect(Collectors.toList());
     }
 }

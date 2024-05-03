@@ -53,6 +53,21 @@ public class MainUI {
     private JButton BookingsCancelButton;
     private DatePicker CIField;
     private DatePicker COField;
+    private JPanel HomeTableJP;
+    private JScrollPane HTScrool;
+    private JTable HomeTable;
+    private JPanel HomeDetail;
+    private JPanel HomeDetailList;
+    private JTextField LNfield;
+    private JTextField FNfield;
+    private JTextField RField;
+    private JTextField COfield;
+    private JPanel HomeCard;
+    private JPanel HomeDetailList2;
+    private JTextField LN2Field;
+    private JTextField FN2List;
+    private JTextField R2Field;
+    private JTextField CI2Field;
 
     public MainUI() {
 
@@ -67,6 +82,8 @@ public class MainUI {
             BookingsTable.repaint();
         });
         bookingsButton.addActionListener(e -> {
+
+            bookingstableCreator.loadTableDataFromCSV(BookingsTable, bookingsfilePath);
             switchPanel(Bookings);
             RoomTable.revalidate();
             RoomTable.repaint();
@@ -253,6 +270,8 @@ public class MainUI {
         }
     }
 
+
+
     private String getValueAt(JTable table, int row, int column) {
         Object value = table.getValueAt(row, column);
         return (value != null) ? value.toString() : "";
@@ -275,4 +294,7 @@ public class MainUI {
         return (value != null) ? LocalDate.parse(value.toString()) : null;
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
 }

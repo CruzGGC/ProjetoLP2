@@ -68,7 +68,8 @@ public class MainUI {
         filter.applyFilters(RNField, ACField, CCField, PField);
 
         homeButton.addActionListener(e -> {
-            
+            // Load table data from CSV file, RoomTable
+            roomtableCreator.loadTableDataFromCSV(RoomTable, roomfilePath);
             switchPanel(HomePanel);
             RoomTable.revalidate();
             RoomTable.repaint();
@@ -76,7 +77,7 @@ public class MainUI {
             BookingsTable.repaint();
         });
         bookingsButton.addActionListener(e -> {
-
+            // Load table data from CSV file, BookingsTable
             bookingstableCreator.loadTableDataFromCSV(BookingsTable, bookingsfilePath);
             switchPanel(Bookings);
             RoomTable.revalidate();
@@ -85,6 +86,8 @@ public class MainUI {
             BookingsTable.repaint();
         });
         roomsButton.addActionListener(e -> {
+            // Load table data from CSV file, RoomTable
+            roomtableCreator.loadTableDataFromCSV(RoomTable, roomfilePath);
             switchPanel(Rooms);
             RoomTable.revalidate();
             RoomTable.repaint();

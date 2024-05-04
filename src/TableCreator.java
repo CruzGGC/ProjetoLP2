@@ -124,9 +124,11 @@ public class TableCreator {
                     int roomId = data.length > 2 && !data[2].isEmpty() ? Integer.parseInt(data[2]) : 0;
                     LocalDate checkInDate = data.length > 3 && !data[3].isEmpty() ? LocalDate.parse(data[3]) : null;
                     LocalDate checkOutDate = data.length > 4 && !data[4].isEmpty() ? LocalDate.parse(data[4]) : null;
+                    int numberOfAdults = data.length > 7 && !data[7].isEmpty() ? Integer.parseInt(data[7]) : 0; // Assuming 7 is the index of the Number of Adults column
+                    int numberOfChildren = data.length > 8 && !data[8].isEmpty() ? Integer.parseInt(data[8]) : 0; // Assuming 8 is the index of the Number of Children column
                     int statusId = data.length > 5 && !data[5].isEmpty() ? Integer.parseInt(data[5]) : 0;
 
-                    bookings.add(new Booking(guestFirstName, guestLastName, roomId, checkInDate, checkOutDate, statusId));
+                    bookings.add(new Booking(guestFirstName, guestLastName, roomId, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, statusId));
                 }
             }
             csvReader.close();
@@ -134,5 +136,15 @@ public class TableCreator {
             e.printStackTrace();
         }
         return bookings;
+    }
+
+    public Room getRoomById(int roomId, String filePath) {
+        List<Room> rooms = loadRoomsFromCSV(filePath);
+        for (Room room : rooms) {
+            if (room.getId() == roomId) {
+                return room;
+            }
+        }
+        return null;
     }
 }

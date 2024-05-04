@@ -8,14 +8,18 @@ public class Booking {
     private int roomId;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
+    private int numberOfAdults;
+    private int numberOfChildren;
     private int statusId;
 
-    public Booking(String guestFirstName, String guestLastName, int roomId, LocalDate checkInDate, LocalDate checkOutDate, int statusId) {
+    public Booking(String guestFirstName, String guestLastName, int roomId, LocalDate checkInDate, LocalDate checkOutDate, int numberOfAdults, int numberOfChildren, int statusId) {
         this.guestFirstName = guestFirstName;
         this.guestLastName = guestLastName;
         this.roomId = roomId;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
+        this.numberOfAdults = numberOfAdults;
+        this.numberOfChildren = numberOfChildren;
         this.statusId = statusId;
     }
 
@@ -57,6 +61,22 @@ public class Booking {
 
     public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
+    }
+
+    public int getNumberOfAdults() {
+        return numberOfAdults;
+    }
+
+    public void setNumberOfAdults(int numberOfAdults) {
+        this.numberOfAdults = numberOfAdults;
+    }
+
+    public int getNumberOfChildren() {
+        return numberOfChildren;
+    }
+
+    public void setNumberOfChildren(int numberOfChildren) {
+        this.numberOfChildren = numberOfChildren;
     }
 
     public int getStatusId() {

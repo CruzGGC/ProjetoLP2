@@ -53,14 +53,14 @@ public class MainUI {
     private JButton BookingsCancelButton;
     private DatePicker CIField;
     private DatePicker COField;
-    private JPanel CIjp;
-    private JTable HomeTable;
-    private JPanel HomeCard;
-    private JPanel COjp;
     private JTable CITable;
     private JTable COTable;
-    private JScrollPane CITableJP;
-    private JScrollPane COTableJP;
+    private JPanel OperationCard;
+    private JPanel CICOperation;
+    private JButton checkInButton;
+    private JButton checkOutButton;
+    private JButton cancelBookingButton;
+    private JButton cancelButton;
 
     public MainUI() {
 
@@ -68,8 +68,6 @@ public class MainUI {
         filter.applyFilters(RNField, ACField, CCField, PField);
 
         homeButton.addActionListener(e -> {
-            // Load table data from CSV file, RoomTable
-            roomtableCreator.loadTableDataFromCSV(RoomTable, roomfilePath);
             switchPanel(HomePanel);
             RoomTable.revalidate();
             RoomTable.repaint();
@@ -77,8 +75,6 @@ public class MainUI {
             BookingsTable.repaint();
         });
         bookingsButton.addActionListener(e -> {
-            // Load table data from CSV file, BookingsTable
-            bookingstableCreator.loadTableDataFromCSV(BookingsTable, bookingsfilePath);
             switchPanel(Bookings);
             RoomTable.revalidate();
             RoomTable.repaint();
@@ -86,8 +82,6 @@ public class MainUI {
             BookingsTable.repaint();
         });
         roomsButton.addActionListener(e -> {
-            // Load table data from CSV file, RoomTable
-            roomtableCreator.loadTableDataFromCSV(RoomTable, roomfilePath);
             switchPanel(Rooms);
             RoomTable.revalidate();
             RoomTable.repaint();
@@ -131,8 +125,75 @@ public class MainUI {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1) {
                     setBookingDetailsFromSelectedRow();
-                    switchPanel(BookingsDetail);
+                    switchPanel(BookingsDetail); // Switch to BookingsDetail first
+                    int selectedRow = BookingsTable.getSelectedRow();
+                    if (selectedRow >= 0) { // Check if a row is actually selected
+                        Object statusValue = BookingsTable.getValueAt(selectedRow, 7); // Assuming 7 is the index of the Status column
+                        if (statusValue != null && statusValue.toString().equals("1")) {
+                            // If the status is 1 (Booked), retrieve the room details and display them in the BookingsRoomStatus label
+                            Object roomIdValue = BookingsTable.getValueAt(selectedRow, 2); // Assuming 2 is the index of the Room column
+                            if (roomIdValue != null) {
+                                int roomId = Integer.parseInt(roomIdValue.toString());
+                                Room room = roomtableCreator.getRoomById(roomId, roomfilePath); // Assuming roomtableCreator and roomfilePath are available
+                                if (room != null) {
+                                    BookingsRoomStatus.setText("Room " + room.getId() + " is booked. Price: " + room.getPrice());
+                                }
+                            }
+                            switchPanel(BookingsDetail);
+                            CICOperation.setVisible(true);
+                            Savecancel.setVisible(false);
+                        } else {
+                            switchPanel(BookingsDetail);
+                            Savecancel.setVisible(true);
+                            CICOperation.setVisible(false);
+                        }
+                    }
                 }
+            }
+        });
+
+        checkInButton.addActionListener(e -> {
+            int selectedRow = BookingsTable.getSelectedRow();
+            if (selectedRow >= 0) { // Check if a row is actually selected
+                // Set the Status column to 2 and the State column to "Checked In"
+                BookingsTable.setValueAt(2, selectedRow, 7); // Assuming 7 is the index of the Status column
+                BookingsTable.setValueAt("Checked In", selectedRow, 8); // Assuming 8 is the index of the State column
+
+                // Write the updated table data back to the BT.csv file
+                bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
+
+                // Switch back to the BookingsTableJP panel
+                switchPanel(BookingsTableJP);
+            }
+        });
+
+        checkOutButton.addActionListener(e -> {
+            int selectedRow = BookingsTable.getSelectedRow();
+            if (selectedRow >= 0) { // Check if a row is actually selected
+                // Set the Status column to 3 and the State column to "Checked Out"
+                BookingsTable.setValueAt(3, selectedRow, 7); // Assuming 7 is the index of the Status column
+                BookingsTable.setValueAt("Checked Out", selectedRow, 8); // Assuming 8 is the index of the State column
+
+                // Write the updated table data back to the BT.csv file
+                bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
+
+                // Switch back to the BookingsTableJP panel
+                switchPanel(BookingsTableJP);
+            }
+        });
+
+        cancelBookingButton.addActionListener(e -> {
+            int selectedRow = BookingsTable.getSelectedRow();
+            if (selectedRow >= 0) { // Check if a row is actually selected
+                // Set the Status column to 4 and the State column to "Canceled"
+                BookingsTable.setValueAt(4, selectedRow, 7); // Assuming 7 is the index of the Status column
+                BookingsTable.setValueAt("Canceled", selectedRow, 8); // Assuming 8 is the index of the State column
+
+                // Write the updated table data back to the BT.csv file
+                bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
+
+                // Switch back to the BookingsTableJP panel
+                switchPanel(BookingsTableJP);
             }
         });
 
@@ -169,7 +230,7 @@ public class MainUI {
                 int numberOfChildren = Integer.parseInt(CField.getText());
                 LocalDate checkInDate = CIField.getDate();
                 LocalDate checkOutDate = COField.getDate();
-                int canceledStatus = 0; // Assuming 0 is the status for canceled bookings
+                int canceledStatus = 4; // Assuming 4 is the status for canceled bookings
 
                 // Use the searchAvailableRooms method to find the available rooms
                 List<Room> availableRooms = roomBookingSystem.searchAvailableRooms(rooms, bookings, numberOfAdults, numberOfChildren, checkInDate, checkOutDate, canceledStatus);
@@ -210,6 +271,10 @@ public class MainUI {
                     } else {
                         // If all fields are filled and a room has been selected, proceed with the existing logic
                         updateBookingsTableFromFields();
+                        BookingsTable.setValueAt(AField.getText(), selectedRow, 5);
+                        BookingsTable.setValueAt(CField.getText(), selectedRow, 6);
+                        BookingsTable.setValueAt(1, selectedRow, 7);
+                        BookingsTable.setValueAt("Booked", selectedRow, 8);
                         bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
                         switchPanel(BookingsTableJP);
                     }
@@ -253,6 +318,8 @@ public class MainUI {
         LNField.setText(getValueAt(BookingsTable, row, 1));
         CIField.setDate(getDateAt(BookingsTable, row, 3));
         COField.setDate(getDateAt(BookingsTable, row, 4));
+        AField.setText(getValueAt(BookingsTable, row, 5)); // Assuming 5 is the index of the Number of Adults column
+        CField.setText(getValueAt(BookingsTable, row, 6)); // Assuming 6 is the index of the Number of Children column
     }
 
     private void updateBookingsTableFromFields() {
@@ -263,11 +330,10 @@ public class MainUI {
             BookingsTable.setValueAt(LNField.getText(), row, 1);
             BookingsTable.setValueAt(CIField.getDate(), row, 3);
             BookingsTable.setValueAt(COField.getDate(), row, 4);
-            BookingsTable.setValueAt(AField.getText(), row, 5);
+            BookingsTable.setValueAt(AField.getText(), row, 5); // Assuming 5 is the index of the Number of Adults column
+            BookingsTable.setValueAt(CField.getText(), row, 6); // Assuming 6 is the index of the Number of Children column
         }
     }
-
-
 
     private String getValueAt(JTable table, int row, int column) {
         Object value = table.getValueAt(row, column);
@@ -289,9 +355,5 @@ public class MainUI {
     private LocalDate getDateAt(JTable table, int row, int column) {
         Object value = table.getValueAt(row, column);
         return (value != null) ? LocalDate.parse(value.toString()) : null;
-    }
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
     }
 }

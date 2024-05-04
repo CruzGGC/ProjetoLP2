@@ -53,21 +53,14 @@ public class MainUI {
     private JButton BookingsCancelButton;
     private DatePicker CIField;
     private DatePicker COField;
-    private JPanel HomeTableJP;
-    private JScrollPane HTScrool;
+    private JPanel CIjp;
     private JTable HomeTable;
-    private JPanel HomeDetail;
-    private JPanel HomeDetailList;
-    private JTextField LNfield;
-    private JTextField FNfield;
-    private JTextField RField;
-    private JTextField COfield;
     private JPanel HomeCard;
-    private JPanel HomeDetailList2;
-    private JTextField LN2Field;
-    private JTextField FN2List;
-    private JTextField R2Field;
-    private JTextField CI2Field;
+    private JPanel COjp;
+    private JTable CITable;
+    private JTable COTable;
+    private JScrollPane CITableJP;
+    private JScrollPane COTableJP;
 
     public MainUI() {
 
@@ -75,6 +68,7 @@ public class MainUI {
         filter.applyFilters(RNField, ACField, CCField, PField);
 
         homeButton.addActionListener(e -> {
+            
             switchPanel(HomePanel);
             RoomTable.revalidate();
             RoomTable.repaint();

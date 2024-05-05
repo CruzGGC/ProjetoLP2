@@ -69,21 +69,21 @@ public class MainUI {
         loadCheckOutsToTable();
 
         // Add a new column for the button
-        DefaultTableModel modelCI = (DefaultTableModel) CITable.getModel();
-        modelCI.addColumn("Check In");
+        DefaultTableModel modelCIT = (DefaultTableModel) CITable.getModel();
+        modelCIT.addColumn("Check In");
 
-        // Add the button to the last column
-        TableColumn columnCI = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
-        columnCI.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, COTable, bookingsfilePath));
-        columnCI.setCellRenderer(new ButtonRenderer());
+        DefaultTableModel modelCOT = (DefaultTableModel) COTable.getModel();
+        modelCOT.addColumn("Check Out");
 
-        DefaultTableModel modelCO = (DefaultTableModel) COTable.getModel();
-        modelCO.addColumn("Check Out");
+        // Add the button to the last column in CITable
+        TableColumn columnCITable = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
+        columnCITable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, BookingsTable, bookingsfilePath, "CITable"));
+        columnCITable.setCellRenderer(new ButtonRenderer());
 
-        // Add the button to the last column
-        TableColumn columnCO = COTable.getColumnModel().getColumn(COTable.getColumnCount() - 1);
-        columnCO.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, COTable, bookingsfilePath));
-        columnCO.setCellRenderer(new ButtonRenderer());
+        // Add the button to the last column in COTable
+        TableColumn columnCOTable = COTable.getColumnModel().getColumn(COTable.getColumnCount() - 1);
+        columnCOTable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, COTable, BookingsTable, bookingsfilePath, "COTable"));
+        columnCOTable.setCellRenderer(new ButtonRenderer());
 
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);

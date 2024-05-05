@@ -1,71 +1,77 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class ButtonEditor extends DefaultCellEditor {
-    protected JButton button;
-    private String label;
-    private boolean isPushed;
+    private final JButton button;
     private final TableCreator bookingstableCreator;
-    private final JTable CITable;
-    private final JTable COTable; // Added this line
-    private JTable table; // Added this line
     private final String bookingsfilePath;
     private int row;
+    private final String tableType;
 
-    public ButtonEditor(JCheckBox checkBox, TableCreator bookingstableCreator, JTable CITable, JTable COTable, String bookingsfilePath) { // Modified this line
+    public ButtonEditor(JCheckBox checkBox, TableCreator bookingstableCreator, JTable CITable, JTable BookingsTable, String bookingsfilePath, String tableType) {
         super(checkBox);
         this.bookingstableCreator = bookingstableCreator;
-        this.CITable = CITable;
-        this.COTable = COTable; // Added this line
         this.bookingsfilePath = bookingsfilePath;
+        this.tableType = tableType;
         button = new JButton();
         button.setOpaque(true);
         button.addActionListener(e -> fireEditingStopped());
     }
 
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        this.table = table; // Added this line
-        label = (value == null) ? "" : value.toString();
-        button.setText(label);
-        isPushed = true;
-        this.row = row; // Store the row that the button is in
+        button.setText(value == null ? "" : value.toString());
+        this.row = row;
         return button;
     }
 
     public Object getCellEditorValue() {
-        if (isPushed) {
-            // Implement your button click event here
-            if (row >= 0) { // Check if a row is actually selected
-                // Load the BT.csv file into a temporary JTable
-                JTable tempTable = new JTable();
-                if (CITable.equals(table)) {
-                    bookingstableCreator.loadTableDataFromCSV(tempTable, bookingsfilePath);
+        if (row >= 0) {
+            System.out.println("Modifying row: " + row);
 
-                    // Set the Status column to 2 and the State column to "Checked In"
-                    tempTable.setValueAt(2, row, 7); // Assuming 7 is the index of the Status column
-                    tempTable.setValueAt("Checked In", row, 8); // Assuming 8 is the index of the State column
-                } else if (COTable.equals(table)) {
-                    bookingstableCreator.loadTableDataFromCSV(tempTable, bookingsfilePath);
+            if (tableType.equals("CITable")) {
+                JTable CITempTable = new JTable();
+                bookingstableCreator.loadTableDataFromCSV(CITempTable, bookingsfilePath);
+                filterTableByStatus(CITempTable, 1); // Only add rows with status 1
 
-                    // Set the Status column to 3 and the State column to "Checked Out"
-                    tempTable.setValueAt(3, row, 7); // Assuming 7 is the index of the Status column
-                    tempTable.setValueAt("Checked Out", row, 8); // Assuming 8 is the index of the State column
-                }
+                String guestFirstName = CITempTable.getValueAt(row, 0).toString();
+                String guestLastName = CITempTable.getValueAt(row, 1).toString();
 
-                // Write the updated table data back to the BT.csv file
-                bookingstableCreator.writeTableDataToCSV(tempTable, bookingsfilePath);
+                updateTable(CITempTable, 2, "Checked In", guestFirstName, guestLastName);
+            } else if (tableType.equals("COTable")) {
+                JTable COTempTable = new JTable();
+                bookingstableCreator.loadTableDataFromCSV(COTempTable, bookingsfilePath);
+                filterTableByStatus(COTempTable, 2); // Only add rows with status 2
+
+                String guestFirstName = COTempTable.getValueAt(row, 0).toString();
+                String guestLastName = COTempTable.getValueAt(row, 1).toString();
+
+                updateTable(COTempTable, 3, "Checked Out", guestFirstName, guestLastName);
             }
         }
-        isPushed = false;
-        return label;
+        return button.getText();
     }
 
-    public boolean stopCellEditing() {
-        isPushed = false;
-        return super.stopCellEditing();
+    private void updateTable(JTable table, int newStatus, String newState, String guestFirstName, String guestLastName) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String firstName = model.getValueAt(i, 0).toString();
+            String lastName = model.getValueAt(i, 1).toString();
+            if (firstName.equals(guestFirstName) && lastName.equals(guestLastName)) {
+                model.setValueAt(newStatus, i, 7); // Assuming 7 is the index of the Status column
+                model.setValueAt(newState, i, 8); // Assuming 8 is the index of the State column
+            }
+        }
+        bookingstableCreator.writeTableDataToCSV(table, bookingsfilePath);
     }
 
-    protected void fireEditingStopped() {
-        super.fireEditingStopped();
+    private void filterTableByStatus(JTable table, int status) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        for (int i = model.getRowCount() - 1; i >= 0; i--) {
+            Object value = model.getValueAt(i, 7);
+            if (value == null || !value.toString().equals(String.valueOf(status))) {
+                model.removeRow(i);
+            }
+        }
     }
 }

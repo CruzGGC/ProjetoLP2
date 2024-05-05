@@ -16,52 +16,28 @@ public class MainUI {
     private final TableCreator bookingstableCreator = new TableCreator();
     private final String bookingsfilePath = "src/Tables/BT.csv";
 
-    private JPanel MainPanel;
-    private JButton homeButton;
-    private JButton bookingsButton;
-    private JButton roomsButton;
-    private JPanel Card;
-    private JPanel HomePanel;
-    private JPanel Bookings;
-    private JPanel Rooms;
-    private JPanel RoomsCard;
-    private JPanel RoomTableJP;
-    private JPanel RoomDetail;
-    private JTable RoomTable;
-    private JButton RoomsaveButton;
-    private JPanel RoomDetailList;
-    private JPanel SaveCancel;
-    private JButton RoomcancelButton;
-    private JTextField RNField;
-    private JTextField ACField;
-    private JTextField CCField;
-    private JTextField PField;
-    private JScrollPane TBScrollPane;
-    private JTable BookingsTable;
-    private JPanel BookingsTableJP;
-    private JPanel BookingsDetail;
-    private JPanel BookingsDetailList;
-    private JScrollPane BTScroll;
-    private JTextField FNField;
-    private JTextField LNField;
-    private JTextField AField;
-    private JButton BookingsGARButton;
-    private JButton BookingsBRButton;
-    private JPanel Savecancel;
-    private JPanel BookingsCard;
-    private JTextField CField;
+    // Panels
+    private JPanel MainPanel, Card, HomePanel, Bookings, Rooms, RoomsCard, RoomTableJP, RoomDetail, RoomDetailList, SaveCancel;
+    private JPanel BookingsTableJP, BookingsDetail, BookingsDetailList, Savecancel, BookingsCard, OperationCard, CICOperation;
+
+    // Buttons
+    private JButton homeButton, bookingsButton, roomsButton, RoomsaveButton, RoomcancelButton, BookingsGARButton, BookingsBRButton;
+    private JButton BookingsCancelButton, checkInButton, checkOutButton, cancelBookingButton, cancelButton;
+
+    // Text Fields
+    private JTextField RNField, ACField, CCField, PField, FNField, LNField, AField, CField;
+
+    // Tables
+    private JTable RoomTable, BookingsTable, CITable, COTable;
+
+    // Scroll Panes
+    private JScrollPane TBScrollPane, BTScroll;
+
+    // Date Pickers
+    private DatePicker CIField, COField;
+
+    // Labels
     private JLabel BookingsRoomStatus;
-    private JButton BookingsCancelButton;
-    private DatePicker CIField;
-    private DatePicker COField;
-    private JTable CITable;
-    private JTable COTable;
-    private JPanel OperationCard;
-    private JPanel CICOperation;
-    private JButton checkInButton;
-    private JButton checkOutButton;
-    private JButton cancelBookingButton;
-    private JButton cancelButton;
 
     public MainUI() {
 

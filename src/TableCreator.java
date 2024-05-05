@@ -118,15 +118,15 @@ public class TableCreator {
             csvReader.readLine(); // Skip the header
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
-                if (data.length > 0) {
-                    String guestFirstName = !data[0].isEmpty() ? data[0] : "N/A";
-                    String guestLastName = data.length > 1 && !data[1].isEmpty() ? data[1] : "N/A";
+                if (data.length > 1 && !data[0].isEmpty() && !data[1].isEmpty()) { // Check if the row is not completely empty
+                    String guestFirstName = data[0];
+                    String guestLastName = data[1];
                     int roomId = data.length > 2 && !data[2].isEmpty() ? Integer.parseInt(data[2]) : 0;
                     LocalDate checkInDate = data.length > 3 && !data[3].isEmpty() ? LocalDate.parse(data[3]) : null;
                     LocalDate checkOutDate = data.length > 4 && !data[4].isEmpty() ? LocalDate.parse(data[4]) : null;
-                    int numberOfAdults = data.length > 7 && !data[7].isEmpty() ? Integer.parseInt(data[7]) : 0; // Assuming 7 is the index of the Number of Adults column
-                    int numberOfChildren = data.length > 8 && !data[8].isEmpty() ? Integer.parseInt(data[8]) : 0; // Assuming 8 is the index of the Number of Children column
-                    int statusId = data.length > 5 && !data[5].isEmpty() ? Integer.parseInt(data[5]) : 0;
+                    int numberOfAdults = data.length > 5 && !data[5].isEmpty() ? Integer.parseInt(data[5]) : 0;
+                    int numberOfChildren = data.length > 6 && !data[6].isEmpty() ? Integer.parseInt(data[6]) : 0;
+                    int statusId = data.length > 7 && !data[7].isEmpty() ? Integer.parseInt(data[7]) : 0;
 
                     bookings.add(new Booking(guestFirstName, guestLastName, roomId, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, statusId));
                 }
@@ -147,4 +147,69 @@ public class TableCreator {
         }
         return null;
     }
+
+    public DefaultTableModel loadCheckInsFromCSV(String filePath) {
+        List<String[]> filteredData = new ArrayList<>();
+        LocalDate today = LocalDate.now(); // Get today's date
+        try {
+            BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
+            String row;
+            csvReader.readLine(); // Skip the header
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                if (data.length > 7 && data[7].equals("1")) { // Check if the Status is 1
+                    LocalDate checkInDate = LocalDate.parse(data[3]); // Parse the check-in date
+                    if (checkInDate.equals(today)) { // Compare the check-in date with today's date
+                        // Create a new array with only the values for Guest First Name, Guest Last Name, Room, and Check-Out
+                        String[] filteredRow = {data[0], data[1], data[2], data[3]};
+                        filteredData.add(filteredRow);
+                    }
+                }
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Create a DefaultTableModel with the filtered data and the specified column names
+        DefaultTableModel model = new DefaultTableModel(
+                filteredData.toArray(new String[0][]),
+                new String[] {"Guest First Name", "Guest Last Name", "Room", "Check-In"}
+        );
+
+        return model;
+    }
+
+    public DefaultTableModel loadCheckOutsFromCSV(String filePath) {
+        List<String[]> filteredData = new ArrayList<>();
+        LocalDate today = LocalDate.now(); // Get today's date
+        try {
+            BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
+            String row;
+            csvReader.readLine(); // Skip the header
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                if (data.length > 7 && data[7].equals("2")) { // Check if the Status is 2
+                    LocalDate checkOutDate = LocalDate.parse(data[4]); // Parse the check-out date
+                    if (checkOutDate.equals(today)) { // Compare the check-out date with today's date
+                        // Create a new array with only the values for Guest First Name, Guest Last Name, Room, and Check-Out
+                        String[] filteredRow = {data[0], data[1], data[2], data[4]};
+                        filteredData.add(filteredRow);
+                    }
+                }
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Create a DefaultTableModel with the filtered data and the specified column names
+        DefaultTableModel model = new DefaultTableModel(
+                filteredData.toArray(new String[0][]),
+                new String[] {"Guest First Name", "Guest Last Name", "Room", "Check-Out"}
+        );
+
+        return model;
+    }
+
 }

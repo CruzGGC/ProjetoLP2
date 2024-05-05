@@ -2,6 +2,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -63,6 +64,18 @@ public class MainUI {
     private JButton cancelButton;
 
     public MainUI() {
+
+        loadCheckInsToTable();
+        loadCheckOutsToTable();
+
+        // Add a new column for the button
+        DefaultTableModel model2 = (DefaultTableModel) CITable.getModel();
+        model2.addColumn("Check In");
+
+        // Add the button to the last column
+        TableColumn column = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
+        column.setCellRenderer(new ButtonRenderer());
+        column.setCellEditor(new ButtonEditor(new JCheckBox()));
 
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);
@@ -237,7 +250,7 @@ public class MainUI {
 
                 // Display the result in the UI
                 if (!availableRooms.isEmpty()) {
-                    Room room = availableRooms.get(0); // Get the first available room
+                    Room room = availableRooms.getFirst(); // Get the first available room
                     BookingsRoomStatus.setText("Room " + room.getId() + " is available. Price: " + room.getPrice());
 
                     // Update the Room column of the selected row in the BookingsTable with the room details
@@ -245,7 +258,6 @@ public class MainUI {
                     if (selectedRow >= 0) { // Check if a row is actually selected
                         DefaultTableModel model = (DefaultTableModel) BookingsTable.getModel();
                         model.setValueAt(room.getId(), selectedRow, 2); // 2 is the index of the Room column
-
                         // Write the updated table data back to the BT.csv file
                         bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
                     }
@@ -350,6 +362,16 @@ public class MainUI {
 
     public JTable getBookingsTable() {
         return BookingsTable;
+    }
+
+    public void loadCheckInsToTable() {
+        DefaultTableModel model = bookingstableCreator.loadCheckInsFromCSV(bookingsfilePath);
+        CITable.setModel(model);
+    }
+
+    public void loadCheckOutsToTable() {
+        DefaultTableModel model = bookingstableCreator.loadCheckOutsFromCSV(bookingsfilePath);
+        COTable.setModel(model);
     }
 
     private LocalDate getDateAt(JTable table, int row, int column) {

@@ -65,6 +65,8 @@ public class MainUI {
 
     public MainUI() {
 
+
+
         loadCheckInsToTable();
         loadCheckOutsToTable();
 
@@ -74,8 +76,8 @@ public class MainUI {
 
         // Add the button to the last column
         TableColumn column = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
+        column.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, bookingsfilePath));
         column.setCellRenderer(new ButtonRenderer());
-        column.setCellEditor(new ButtonEditor(new JCheckBox()));
 
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);

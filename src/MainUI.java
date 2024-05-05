@@ -22,10 +22,10 @@ public class MainUI {
 
     // Buttons
     private JButton homeButton, bookingsButton, roomsButton, RoomsaveButton, RoomcancelButton, BookingsGARButton, BookingsBRButton;
-    private JButton BookingsCancelButton, checkInButton, checkOutButton, cancelBookingButton, cancelButton;
+    private JButton BookingsCancelButton, checkInButton, checkOutButton, cancelBookingButton, cancelButton, searchButton;
 
     // Text Fields
-    private JTextField RNField, ACField, CCField, PField, FNField, LNField, AField, CField;
+    private JTextField RNField, ACField, CCField, PField, FNField, LNField, AField, CField, SearchF;
 
     // Tables
     private JTable RoomTable, BookingsTable, CITable, COTable;
@@ -38,6 +38,9 @@ public class MainUI {
 
     // Labels
     private JLabel BookingsRoomStatus;
+
+    // Combo Box
+    private JComboBox comboBox;
 
     public MainUI() {
 

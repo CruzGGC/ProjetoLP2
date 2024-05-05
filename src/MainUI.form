@@ -8,10 +8,10 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="7789f" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="7789f" binding="MainButtons" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="5" left="10" bottom="5" right="10"/>
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -57,7 +57,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="5edc8" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="5edc8" binding="CIJPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -74,7 +74,9 @@
                     <children>
                       <component id="7dc3c" class="javax.swing.JTable" binding="CITable">
                         <constraints/>
-                        <properties/>
+                        <properties>
+                          <preferredScrollableViewportSize width="50" height="50"/>
+                        </properties>
                       </component>
                     </children>
                   </scrollpane>
@@ -88,7 +90,7 @@
                   </component>
                 </children>
               </grid>
-              <grid id="5f6c5" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="5f6c5" binding="COJPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -98,27 +100,29 @@
                 <children>
                   <scrollpane id="4d48d">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
                     <children>
                       <component id="5e682" class="javax.swing.JTable" binding="COTable">
                         <constraints/>
-                        <properties/>
+                        <properties>
+                          <preferredScrollableViewportSize width="50" height="50"/>
+                        </properties>
                       </component>
                     </children>
                   </scrollpane>
+                  <component id="ac421" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Checking Out Today"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <component id="ac421" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Checking Out Today"/>
-                </properties>
-              </component>
             </children>
           </grid>
           <grid id="f5ed7" binding="Bookings" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -161,11 +165,13 @@
                         <children>
                           <component id="37fd9" class="javax.swing.JTable" binding="BookingsTable">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <preferredScrollableViewportSize width="50" height="50"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>
-                      <grid id="14050" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                      <grid id="14050" binding="SearchFilterJP" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
                         <constraints>
                           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -458,7 +464,9 @@
                         <children>
                           <component id="c692e" class="javax.swing.JTable" binding="RoomTable">
                             <constraints/>
-                            <properties/>
+                            <properties>
+                              <preferredScrollableViewportSize width="50" height="50"/>
+                            </properties>
                           </component>
                         </children>
                       </scrollpane>

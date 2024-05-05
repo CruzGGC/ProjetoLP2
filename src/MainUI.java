@@ -41,6 +41,10 @@ public class MainUI {
 
     // Combo Box
     private JComboBox comboBox;
+    private JPanel CIJPanel;
+    private JPanel COJPanel;
+    private JPanel MainButtons;
+    private JPanel SearchFilterJP;
 
     public MainUI() {
 
@@ -235,7 +239,7 @@ public class MainUI {
                 // Use the searchAvailableRooms method to find the available rooms
                 List<Room> availableRooms = roomBookingSystem.searchAvailableRooms(rooms, bookings, numberOfAdults, numberOfChildren, checkInDate, checkOutDate, canceledStatus);
 
-                // Display the result in the UI
+                // Mostra o resultado na obtido UI
                 if (!availableRooms.isEmpty()) {
                     Room room = availableRooms.getFirst(); // Get the first available room
                     BookingsRoomStatus.setText("Room " + room.id() + " is available. Price: " + room.price());

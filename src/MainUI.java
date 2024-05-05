@@ -65,19 +65,25 @@ public class MainUI {
 
     public MainUI() {
 
-
-
         loadCheckInsToTable();
         loadCheckOutsToTable();
 
         // Add a new column for the button
-        DefaultTableModel model2 = (DefaultTableModel) CITable.getModel();
-        model2.addColumn("Check In");
+        DefaultTableModel modelCI = (DefaultTableModel) CITable.getModel();
+        modelCI.addColumn("Check In");
 
         // Add the button to the last column
-        TableColumn column = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
-        column.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, bookingsfilePath));
-        column.setCellRenderer(new ButtonRenderer());
+        TableColumn columnCI = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
+        columnCI.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, COTable, bookingsfilePath));
+        columnCI.setCellRenderer(new ButtonRenderer());
+
+        DefaultTableModel modelCO = (DefaultTableModel) COTable.getModel();
+        modelCO.addColumn("Check Out");
+
+        // Add the button to the last column
+        TableColumn columnCO = COTable.getColumnModel().getColumn(COTable.getColumnCount() - 1);
+        columnCO.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, COTable, bookingsfilePath));
+        columnCO.setCellRenderer(new ButtonRenderer());
 
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);

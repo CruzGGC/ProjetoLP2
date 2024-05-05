@@ -150,7 +150,6 @@ public class TableCreator {
 
     public DefaultTableModel loadCheckInsFromCSV(String filePath) {
         List<String[]> filteredData = new ArrayList<>();
-        LocalDate today = LocalDate.now(); // Get today's date
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
             String row;
@@ -158,12 +157,9 @@ public class TableCreator {
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
                 if (data.length > 7 && data[7].equals("1")) { // Check if the Status is 1
-                    LocalDate checkInDate = LocalDate.parse(data[3]); // Parse the check-in date
-                    if (checkInDate.equals(today)) { // Compare the check-in date with today's date
-                        // Create a new array with only the values for Guest First Name, Guest Last Name, Room, and Check-Out
-                        String[] filteredRow = {data[0], data[1], data[2], data[3]};
-                        filteredData.add(filteredRow);
-                    }
+                    // Create a new array with only the values for Guest First Name, Guest Last Name, Room, and Check-In
+                    String[] filteredRow = {data[0], data[1], data[2], data[3]};
+                    filteredData.add(filteredRow);
                 }
             }
             csvReader.close();
@@ -182,7 +178,6 @@ public class TableCreator {
 
     public DefaultTableModel loadCheckOutsFromCSV(String filePath) {
         List<String[]> filteredData = new ArrayList<>();
-        LocalDate today = LocalDate.now(); // Get today's date
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(filePath));
             String row;
@@ -190,12 +185,9 @@ public class TableCreator {
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
                 if (data.length > 7 && data[7].equals("2")) { // Check if the Status is 2
-                    LocalDate checkOutDate = LocalDate.parse(data[4]); // Parse the check-out date
-                    if (checkOutDate.equals(today)) { // Compare the check-out date with today's date
-                        // Create a new array with only the values for Guest First Name, Guest Last Name, Room, and Check-Out
-                        String[] filteredRow = {data[0], data[1], data[2], data[4]};
-                        filteredData.add(filteredRow);
-                    }
+                    // Create a new array with only the values for Guest First Name, Guest Last Name, Room, and Check-Out
+                    String[] filteredRow = {data[0], data[1], data[2], data[4]};
+                    filteredData.add(filteredRow);
                 }
             }
             csvReader.close();
@@ -211,5 +203,4 @@ public class TableCreator {
 
         return model;
     }
-
 }

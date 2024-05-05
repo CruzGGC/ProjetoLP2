@@ -1,7 +1,8 @@
 Guest First Name, Guest Last Name, Room, Check-In, Check-Out, Number of Adults, Number of Children, Status, State
-Alexandre,Gago,301,2024-05-05,2024-05-06,4,2,2,Checked In
-Bernardo,Kaluza,302,2024-05-05,2024-05-06,4,2,1,Booked
-a,a,101,2024-05-03,2024-05-05,1,0,2,Checked In
+Alexandre,Gago,301,2024-05-05,2024-05-06,4,2,1,Booked
+Tiago,Silva,301,2024-05-05,2024-05-06,4,2,1,Booked
+Bernardo,Kaluza,302,2024-05-04,2024-05-05,4,2,2,Checked In
+Diogo,Oliveira,302,2024-05-04,2024-05-05,4,2,2,Checked In
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

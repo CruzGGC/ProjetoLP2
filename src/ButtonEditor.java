@@ -9,7 +9,7 @@ public class ButtonEditor extends DefaultCellEditor {
     private int row;
     private final String tableType;
 
-    public ButtonEditor(JCheckBox checkBox, TableCreator bookingstableCreator, JTable CITable, JTable BookingsTable, String bookingsfilePath, String tableType) {
+    public ButtonEditor(JCheckBox checkBox, TableCreator bookingstableCreator, String bookingsfilePath, String tableType) {
         super(checkBox);
         this.bookingstableCreator = bookingstableCreator;
         this.bookingsfilePath = bookingsfilePath;
@@ -20,34 +20,27 @@ public class ButtonEditor extends DefaultCellEditor {
     }
 
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        button.setText(value == null ? "" : value.toString());
+        if (tableType.equals("CITable")) {
+            button.setText("Check In");
+        } else if (tableType.equals("COTable")) {
+            button.setText("Check Out");
+        } else {
+            button.setText(value == null ? "" : value.toString());
+        }
         this.row = row;
         return button;
     }
 
     public Object getCellEditorValue() {
         if (row >= 0) {
-            System.out.println("Modifying row: " + row);
+            JTable tempTable = new JTable();
+            bookingstableCreator.loadTableDataFromCSV(tempTable, bookingsfilePath);
+            filterTableByStatus(tempTable, tableType.equals("CITable") ? 1 : 2);
 
-            if (tableType.equals("CITable")) {
-                JTable CITempTable = new JTable();
-                bookingstableCreator.loadTableDataFromCSV(CITempTable, bookingsfilePath);
-                filterTableByStatus(CITempTable, 1); // Only add rows with status 1
+            String guestFirstName = tempTable.getValueAt(row, 0).toString();
+            String guestLastName = tempTable.getValueAt(row, 1).toString();
 
-                String guestFirstName = CITempTable.getValueAt(row, 0).toString();
-                String guestLastName = CITempTable.getValueAt(row, 1).toString();
-
-                updateTable(CITempTable, 2, "Checked In", guestFirstName, guestLastName);
-            } else if (tableType.equals("COTable")) {
-                JTable COTempTable = new JTable();
-                bookingstableCreator.loadTableDataFromCSV(COTempTable, bookingsfilePath);
-                filterTableByStatus(COTempTable, 2); // Only add rows with status 2
-
-                String guestFirstName = COTempTable.getValueAt(row, 0).toString();
-                String guestLastName = COTempTable.getValueAt(row, 1).toString();
-
-                updateTable(COTempTable, 3, "Checked Out", guestFirstName, guestLastName);
-            }
+            updateTable(tempTable, tableType.equals("CITable") ? 2 : 3, tableType.equals("CITable") ? "Checked In" : "Checked Out", guestFirstName, guestLastName);
         }
         return button.getText();
     }
@@ -58,8 +51,8 @@ public class ButtonEditor extends DefaultCellEditor {
             String firstName = model.getValueAt(i, 0).toString();
             String lastName = model.getValueAt(i, 1).toString();
             if (firstName.equals(guestFirstName) && lastName.equals(guestLastName)) {
-                model.setValueAt(newStatus, i, 7); // Assuming 7 is the index of the Status column
-                model.setValueAt(newState, i, 8); // Assuming 8 is the index of the State column
+                model.setValueAt(newStatus, i, 7);
+                model.setValueAt(newState, i, 8);
             }
         }
         bookingstableCreator.writeTableDataToCSV(table, bookingsfilePath);

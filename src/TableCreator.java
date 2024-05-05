@@ -15,11 +15,6 @@ public class TableCreator {
     public void writeTableDataToCSV(JTable table, String filePath) {
         try {
             File file = new File(filePath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
             FileWriter csvWriter = new FileWriter(filePath);
 
             // Write column names
@@ -119,16 +114,12 @@ public class TableCreator {
             while ((row = csvReader.readLine()) != null) {
                 String[] data = row.split(",");
                 if (data.length > 1 && !data[0].isEmpty() && !data[1].isEmpty()) { // Check if the row is not completely empty
-                    String guestFirstName = data[0];
-                    String guestLastName = data[1];
                     int roomId = data.length > 2 && !data[2].isEmpty() ? Integer.parseInt(data[2]) : 0;
                     LocalDate checkInDate = data.length > 3 && !data[3].isEmpty() ? LocalDate.parse(data[3]) : null;
                     LocalDate checkOutDate = data.length > 4 && !data[4].isEmpty() ? LocalDate.parse(data[4]) : null;
-                    int numberOfAdults = data.length > 5 && !data[5].isEmpty() ? Integer.parseInt(data[5]) : 0;
-                    int numberOfChildren = data.length > 6 && !data[6].isEmpty() ? Integer.parseInt(data[6]) : 0;
                     int statusId = data.length > 7 && !data[7].isEmpty() ? Integer.parseInt(data[7]) : 0;
 
-                    bookings.add(new Booking(guestFirstName, guestLastName, roomId, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, statusId));
+                    bookings.add(new Booking(roomId, checkInDate, checkOutDate, statusId));
                 }
             }
             csvReader.close();
@@ -141,7 +132,7 @@ public class TableCreator {
     public Room getRoomById(int roomId, String filePath) {
         List<Room> rooms = loadRoomsFromCSV(filePath);
         for (Room room : rooms) {
-            if (room.getId() == roomId) {
+            if (room.id() == roomId) {
                 return room;
             }
         }
@@ -168,12 +159,11 @@ public class TableCreator {
         }
 
         // Create a DefaultTableModel with the filtered data and the specified column names
-        DefaultTableModel model = new DefaultTableModel(
+
+        return new DefaultTableModel(
                 filteredData.toArray(new String[0][]),
                 new String[] {"Guest First Name", "Guest Last Name", "Room", "Check-In"}
         );
-
-        return model;
     }
 
     public DefaultTableModel loadCheckOutsFromCSV(String filePath) {
@@ -196,11 +186,10 @@ public class TableCreator {
         }
 
         // Create a DefaultTableModel with the filtered data and the specified column names
-        DefaultTableModel model = new DefaultTableModel(
+
+        return new DefaultTableModel(
                 filteredData.toArray(new String[0][]),
                 new String[] {"Guest First Name", "Guest Last Name", "Room", "Check-Out"}
         );
-
-        return model;
     }
 }

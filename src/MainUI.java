@@ -77,12 +77,12 @@ public class MainUI {
 
         // Add the button to the last column in CITable
         TableColumn columnCITable = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
-        columnCITable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, CITable, BookingsTable, bookingsfilePath, "CITable"));
+        columnCITable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, bookingsfilePath, "CITable"));
         columnCITable.setCellRenderer(new ButtonRenderer());
 
         // Add the button to the last column in COTable
         TableColumn columnCOTable = COTable.getColumnModel().getColumn(COTable.getColumnCount() - 1);
-        columnCOTable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, COTable, BookingsTable, bookingsfilePath, "COTable"));
+        columnCOTable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, bookingsfilePath, "COTable"));
         columnCOTable.setCellRenderer(new ButtonRenderer());
 
         Filter filter = new Filter();
@@ -157,7 +157,7 @@ public class MainUI {
                                 int roomId = Integer.parseInt(roomIdValue.toString());
                                 Room room = roomtableCreator.getRoomById(roomId, roomfilePath); // Assuming roomtableCreator and roomfilePath are available
                                 if (room != null) {
-                                    BookingsRoomStatus.setText("Room " + room.getId() + " is booked. Price: " + room.getPrice());
+                                    BookingsRoomStatus.setText("Room " + room.id() + " is booked. Price: " + room.price());
                                 }
                             }
                             switchPanel(BookingsDetail);
@@ -259,13 +259,13 @@ public class MainUI {
                 // Display the result in the UI
                 if (!availableRooms.isEmpty()) {
                     Room room = availableRooms.getFirst(); // Get the first available room
-                    BookingsRoomStatus.setText("Room " + room.getId() + " is available. Price: " + room.getPrice());
+                    BookingsRoomStatus.setText("Room " + room.id() + " is available. Price: " + room.price());
 
                     // Update the Room column of the selected row in the BookingsTable with the room details
                     int selectedRow = BookingsTable.getSelectedRow();
                     if (selectedRow >= 0) { // Check if a row is actually selected
                         DefaultTableModel model = (DefaultTableModel) BookingsTable.getModel();
-                        model.setValueAt(room.getId(), selectedRow, 2); // 2 is the index of the Room column
+                        model.setValueAt(room.id(), selectedRow, 2); // 2 is the index of the Room column
                         // Write the updated table data back to the BT.csv file
                         bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
                     }

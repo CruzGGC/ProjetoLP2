@@ -4,8 +4,12 @@ import java.awt.event.WindowEvent;
 
 public class Main {
     public static void main(String[] args) {
+        setLookAndFeel();
+        SwingUtilities.invokeLater(Main::createUI);
+    }
+
+    private static void setLookAndFeel() {
         try {
-            // Set the look and feel to Nimbus
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
@@ -15,35 +19,36 @@ public class Main {
         } catch (Exception e) {
             System.out.print("Erro!");
         }
-        SwingUtilities.invokeLater(Main::createUI);
     }
+
     private static void createUI() {
         MainUI ui = new MainUI();
-        JPanel root = ui.getMainPanel();
+        JFrame frame = setupFrame(ui.getMainPanel());
+        TableCreator roomTableCreator = loadTableData(ui.getRoomTable(), "src/Tables/RT.csv");
+        TableCreator bookingsTableCreator = loadTableData(ui.getBookingsTable(), "src/Tables/BT.csv");
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                roomTableCreator.writeTableDataToCSV(ui.getRoomTable(), "src/Tables/RT.csv");
+                bookingsTableCreator.writeTableDataToCSV(ui.getBookingsTable(), "src/Tables/BT.csv");
+            }
+        });
+    }
+
+    private static JFrame setupFrame(JPanel root) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(root);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        return frame;
+    }
 
-        // Load table data from CSV file, RoomTable
-        TableCreator roomtableCreator = new TableCreator();
-        String roomfilePath = "src/Tables/RT.csv";
-        roomtableCreator.loadTableDataFromCSV(ui.getRoomTable(), roomfilePath);
-
-        // Load table data from CSV file, BookingsTable
-
-        TableCreator bookingstableCreator = new TableCreator();
-        String bookingsfilePath = "src/Tables/BT.csv";
-        bookingstableCreator.loadTableDataFromCSV(ui.getBookingsTable(), bookingsfilePath);
-
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                roomtableCreator.writeTableDataToCSV(ui.getRoomTable(), roomfilePath);
-                bookingstableCreator.writeTableDataToCSV(ui.getBookingsTable(), bookingsfilePath);
-            }
-        });
+    private static TableCreator loadTableData(JTable table, String filePath) {
+        TableCreator tableCreator = new TableCreator();
+        tableCreator.loadTableDataFromCSV(table, filePath);
+        return tableCreator;
     }
 }

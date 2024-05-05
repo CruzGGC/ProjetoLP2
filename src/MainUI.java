@@ -17,18 +17,21 @@ public class MainUI {
     private final String bookingsfilePath = "src/Tables/BT.csv";
 
     // Panels
-    private JPanel MainPanel, Card, HomePanel, Bookings, Rooms, RoomTableJP, RoomDetail;
-    private JPanel BookingsTableJP, BookingsDetail, Savecancel, CICOperation;
+    private JPanel MainPanel, Card, HomePanel, Bookings, Rooms, RoomsCard, RoomTableJP, RoomDetail, RoomDetailList, SaveCancel;
+    private JPanel BookingsTableJP, BookingsDetail, BookingsDetailList, Savecancel, BookingsCard, OperationCard, CICOperation;
 
     // Buttons
     private JButton homeButton, bookingsButton, roomsButton, RoomsaveButton, RoomcancelButton, BookingsGARButton, BookingsBRButton;
-    private JButton BookingsCancelButton, checkInButton, checkOutButton, cancelBookingButton;
+    private JButton BookingsCancelButton, checkInButton, checkOutButton, cancelBookingButton, cancelButton;
 
     // Text Fields
     private JTextField RNField, ACField, CCField, PField, FNField, LNField, AField, CField;
 
     // Tables
     private JTable RoomTable, BookingsTable, CITable, COTable;
+
+    // Scroll Panes
+    private JScrollPane TBScrollPane, BTScroll;
 
     // Date Pickers
     private DatePicker CIField, COField;

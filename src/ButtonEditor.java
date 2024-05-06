@@ -4,6 +4,10 @@ import java.awt.*;
 import java.io.*;
 import java.util.Arrays;
 
+/**
+ * ButtonEditor class is responsible for handling the editing of buttons in a table cell.
+ * It extends DefaultCellEditor.
+ */
 public class ButtonEditor extends DefaultCellEditor {
     private final JButton button;
     private final TableCreator bookingstableCreator;
@@ -11,6 +15,13 @@ public class ButtonEditor extends DefaultCellEditor {
     private int row;
     private final String tableType;
 
+    /**
+     * Constructor for the ButtonEditor class.
+     * @param checkBox The checkbox to be used in the editor.
+     * @param bookingstableCreator The TableCreator object for the bookings table.
+     * @param bookingsfilePath The file path of the bookings table.
+     * @param tableType The type of table.
+     */
     public ButtonEditor(JCheckBox checkBox, TableCreator bookingstableCreator, String bookingsfilePath, String tableType) {
         super(checkBox);
         this.bookingstableCreator = bookingstableCreator;
@@ -21,6 +32,15 @@ public class ButtonEditor extends DefaultCellEditor {
         button.addActionListener(e -> fireEditingStopped());
     }
 
+    /**
+     * Returns the component used for editing the cell.
+     * @param table The JTable that is asking the editor to edit.
+     * @param value The value of the cell to be edited.
+     * @param isSelected True if the cell is to be edited with the selection highlighted; otherwise false.
+     * @param row The row index of the cell being edited.
+     * @param column The column index of the cell being edited.
+     * @return The component used for editing the cell.
+     */
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         if (tableType.equals("CITable")) {
             button.setText("Check In");
@@ -33,6 +53,10 @@ public class ButtonEditor extends DefaultCellEditor {
         return button;
     }
 
+    /**
+     * Returns the value contained in the editor.
+     * @return The value contained in the editor.
+     */
     public Object getCellEditorValue() {
         if (row >= 0) {
             JTable tempTable = new JTable();
@@ -67,6 +91,19 @@ public class ButtonEditor extends DefaultCellEditor {
         return button.getText();
     }
 
+    /**
+     * Updates the bookings table with the new status and state.
+     * @param newStatus The new status to update the row with.
+     * @param newState The new state to update the row with.
+     * @param guestFirstName The first name of the guest.
+     * @param guestLastName The last name of the guest.
+     * @param room The room number.
+     * @param checkIn The check-in date.
+     * @param checkOut The check-out date.
+     * @param numAdults The number of adults.
+     * @param numChildren The number of children.
+     * @return True if the row was updated successfully; otherwise false.
+     */
     private boolean updateTable(int newStatus, String newState, String guestFirstName, String guestLastName, String room, String checkIn, String checkOut, String numAdults, String numChildren) {
         boolean isRowUpdated = false;
         File inputFile = new File(bookingsfilePath);
@@ -107,6 +144,11 @@ public class ButtonEditor extends DefaultCellEditor {
         return isRowUpdated;
     }
 
+    /**
+     * Filters the table by status.
+     * @param table The table to filter.
+     * @param status The status to filter by.
+     */
     private void filterTableByStatus(JTable table, int status) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         for (int i = model.getRowCount() - 1; i >= 0; i--) {

@@ -67,7 +67,7 @@ public class MainUI {
         comboBox.addItem("Canceled");
 
         Filter filter = new Filter();
-        filter.applyFilters(RNField, ACField, CCField, PField);
+        filter.applyFilters(RNField, ACField, CCField, PField, AField, CField);
 
         // Set up button actions
         homeButton.addActionListener(e -> {

@@ -23,7 +23,7 @@ public class Filter {
         });
     }
 
-    public void applyFilters(JTextField RNField, JTextField ACField, JTextField CCField, JTextField PField) {
+    public void applyFilters(JTextField RNField, JTextField ACField, JTextField CCField, JTextField PField, JTextField AField, JTextField CField) {
         String numberRegex = "\\d*";
         String decimalNumberRegex = "\\d*\\.?\\d*";
 
@@ -31,5 +31,8 @@ public class Filter {
         applyFilter(ACField, numberRegex);
         applyFilter(CCField, numberRegex);
         applyFilter(PField, decimalNumberRegex);
+
+        applyFilter(AField, numberRegex);
+        applyFilter(CField, numberRegex);
     }
 }

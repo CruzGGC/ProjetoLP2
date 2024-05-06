@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class MainUI {
 
@@ -50,6 +51,12 @@ public class MainUI {
 
         loadCheckInsToTable();
         loadCheckOutsToTable();
+
+        // Assuming comboBox is your JComboBox instance
+        comboBox.addItem("Booked");
+        comboBox.addItem("Checked In");
+        comboBox.addItem("Checked Out");
+        comboBox.addItem("Canceled");
 
         // Add a new column for the button
         DefaultTableModel modelCIT = (DefaultTableModel) CITable.getModel();
@@ -288,6 +295,50 @@ public class MainUI {
             }
         });
 
+        searchButton.addActionListener(e -> {
+            String selectedState = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
+            String searchText = SearchF.getText();
+            String firstName = "";
+            String lastName = "";
+
+            if (!searchText.isEmpty()) {
+                String[] names = searchText.split(" ", 2);
+                firstName = names[0];
+                lastName = names.length > 1 ? names[1] : "";
+            }
+
+            JTable tempTable = new JTable();
+            bookingstableCreator.loadTableDataFromCSV(tempTable, bookingsfilePath);
+
+            DefaultTableModel model = (DefaultTableModel) BookingsTable.getModel();
+            model.setRowCount(0); // Clear the BookingsTable
+
+            for (int i = 0; i < tempTable.getRowCount(); i++) {
+                Object stateObj = tempTable.getValueAt(i, 8); // Assuming 8 is the index of the State column
+                Object guestFirstNameObj = tempTable.getValueAt(i, 0); // Assuming 0 is the index of the Guest First Name column
+                Object guestLastNameObj = tempTable.getValueAt(i, 1); // Assuming 1 is the index of the Guest Last Name column
+
+                if (stateObj != null) {
+                    String state = stateObj.toString();
+                    String guestFirstName = guestFirstNameObj != null ? guestFirstNameObj.toString() : "";
+                    String guestLastName = guestLastNameObj != null ? guestLastNameObj.toString() : "";
+
+                    if (state.equals(selectedState) && (searchText.isEmpty() || (guestFirstName.equals(firstName) && guestLastName.equals(lastName)))) {
+                        model.addRow(new Object[]{
+                                guestFirstName,
+                                guestLastName,
+                                tempTable.getValueAt(i, 2),
+                                tempTable.getValueAt(i, 3),
+                                tempTable.getValueAt(i, 4),
+                                tempTable.getValueAt(i, 5),
+                                tempTable.getValueAt(i, 6),
+                                tempTable.getValueAt(i, 7),
+                                state
+                        });
+                    }
+                }
+            }
+        });
 
     }
 

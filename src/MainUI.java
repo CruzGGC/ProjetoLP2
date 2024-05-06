@@ -58,23 +58,6 @@ public class MainUI {
         comboBox.addItem("Checked Out");
         comboBox.addItem("Canceled");
 
-        // Add a new column for the button
-        DefaultTableModel modelCIT = (DefaultTableModel) CITable.getModel();
-        modelCIT.addColumn("Check In");
-
-        DefaultTableModel modelCOT = (DefaultTableModel) COTable.getModel();
-        modelCOT.addColumn("Check Out");
-
-        // Add the button to the last column in CITable
-        TableColumn columnCITable = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
-        columnCITable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, bookingsfilePath, "CITable"));
-        columnCITable.setCellRenderer(new ButtonRenderer());
-
-        // Add the button to the last column in COTable
-        TableColumn columnCOTable = COTable.getColumnModel().getColumn(COTable.getColumnCount() - 1);
-        columnCOTable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, bookingsfilePath, "COTable"));
-        columnCOTable.setCellRenderer(new ButtonRenderer());
-
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);
 
@@ -84,6 +67,8 @@ public class MainUI {
             RoomTable.repaint();
             BookingsTable.revalidate();
             BookingsTable.repaint();
+            loadCheckInsToTable();
+            loadCheckOutsToTable();
         });
         bookingsButton.addActionListener(e -> {
             switchPanel(Bookings);
@@ -91,6 +76,7 @@ public class MainUI {
             RoomTable.repaint();
             BookingsTable.revalidate();
             BookingsTable.repaint();
+            bookingstableCreator.loadTableDataFromCSV(BookingsTable, bookingsfilePath);
         });
         roomsButton.addActionListener(e -> {
             switchPanel(Rooms);
@@ -98,6 +84,7 @@ public class MainUI {
             RoomTable.repaint();
             BookingsTable.revalidate();
             BookingsTable.repaint();
+            roomtableCreator.loadTableDataFromCSV(RoomTable, roomfilePath);
         });
 
         RoomTable.addMouseListener(new MouseAdapter() {
@@ -407,13 +394,25 @@ public class MainUI {
     }
 
     public void loadCheckInsToTable() {
-        DefaultTableModel model = bookingstableCreator.loadCheckInsFromCSV(bookingsfilePath);
-        CITable.setModel(model);
+        DefaultTableModel modelCIT = bookingstableCreator.loadCheckInsFromCSV(bookingsfilePath);
+        modelCIT.addColumn("Check In"); // Add a new column for the button
+        CITable.setModel(modelCIT);
+
+        // Add the button to the last column in CITable
+        TableColumn columnCITable = CITable.getColumnModel().getColumn(CITable.getColumnCount() - 1);
+        columnCITable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, bookingsfilePath, "CITable"));
+        columnCITable.setCellRenderer(new ButtonRenderer());
     }
 
     public void loadCheckOutsToTable() {
-        DefaultTableModel model = bookingstableCreator.loadCheckOutsFromCSV(bookingsfilePath);
-        COTable.setModel(model);
+        DefaultTableModel modelCOT = bookingstableCreator.loadCheckOutsFromCSV(bookingsfilePath);
+        modelCOT.addColumn("Check Out");
+        COTable.setModel(modelCOT);
+
+        // Add the button to the last column in COTable
+        TableColumn columnCOTable = COTable.getColumnModel().getColumn(COTable.getColumnCount() - 1);
+        columnCOTable.setCellEditor(new ButtonEditor(new JCheckBox(), bookingstableCreator, bookingsfilePath, "COTable"));
+        columnCOTable.setCellRenderer(new ButtonRenderer());
     }
 
     private LocalDate getDateAt(JTable table, int row, int column) {

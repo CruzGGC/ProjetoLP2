@@ -67,7 +67,7 @@ public class MainUI {
         comboBox.addItem("Canceled");
 
         Filter filter = new Filter();
-        filter.applyFilters(RNField, ACField, CCField, PField, AField, CField);
+        filter.applyFilters(RNField, ACField, CCField, PField, AField, CField, FNField, LNField);
 
         // Set up button actions
         homeButton.addActionListener(e -> {
@@ -137,8 +137,8 @@ public class MainUI {
                     int selectedRow = BookingsTable.getSelectedRow();
                     if (selectedRow >= 0) { // Check if a row is actually selected
                         Object statusValue = BookingsTable.getValueAt(selectedRow, 7); // Assuming 7 is the index of the Status column
-                        if (statusValue != null && statusValue.toString().equals("1")) {
-                            // If the status is 1 (Booked), retrieve the room details and display them in the BookingsRoomStatus label
+                        if (statusValue != null && (statusValue.toString().equals("1") || statusValue.toString().equals("2") || statusValue.toString().equals("3"))) {
+                            // If the status is 1 (Booked), 2 (Checked In), or 3 (Checked Out), retrieve the room details and display them in the BookingsRoomStatus label
                             Object roomIdValue = BookingsTable.getValueAt(selectedRow, 2); // Assuming 2 is the index of the Room column
                             if (roomIdValue != null) {
                                 int roomId = Integer.parseInt(roomIdValue.toString());
@@ -203,6 +203,20 @@ public class MainUI {
                 // Switch back to the BookingsTableJP panel
                 switchPanel(BookingsTableJP);
             }
+        });
+
+        cancelButton.addActionListener(e -> {
+            // Clear all the fields
+            FNField.setText("");
+            LNField.setText("");
+            CIField.setDate(null);
+            COField.setDate(null);
+            AField.setText("");
+            CField.setText("");
+
+            // Clear the JLabel
+            BookingsRoomStatus.setText("");
+            switchPanel(BookingsTableJP);
         });
 
         BookingsCancelButton.addActionListener(e -> {

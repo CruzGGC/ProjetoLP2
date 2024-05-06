@@ -23,7 +23,7 @@ public class Filter {
         });
     }
 
-    public void applyFilters(JTextField RNField, JTextField ACField, JTextField CCField, JTextField PField, JTextField AField, JTextField CField) {
+    public void applyFilters(JTextField RNField, JTextField ACField, JTextField CCField, JTextField PField, JTextField AField, JTextField CField, JTextField FNField, JTextField LNField) {
         String numberRegex = "\\d*";
         String decimalNumberRegex = "\\d*\\.?\\d*";
         String letterRegex = "[a-zA-Z]*";

@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.*;
+import java.util.Arrays;
 
 public class ButtonEditor extends DefaultCellEditor {
     private final JButton button;
@@ -37,25 +39,72 @@ public class ButtonEditor extends DefaultCellEditor {
             bookingstableCreator.loadTableDataFromCSV(tempTable, bookingsfilePath);
             filterTableByStatus(tempTable, tableType.equals("CITable") ? 1 : 2);
 
-            String guestFirstName = tempTable.getValueAt(row, 0).toString();
-            String guestLastName = tempTable.getValueAt(row, 1).toString();
+            if (tempTable.getRowCount() > row) {
+                Object[] rowValues = new Object[tempTable.getColumnCount()];
+                for (int i = 0; i < tempTable.getColumnCount(); i++) {
+                    rowValues[i] = tempTable.getValueAt(row, i);
+                }
 
-            updateTable(tempTable, tableType.equals("CITable") ? 2 : 3, tableType.equals("CITable") ? "Checked In" : "Checked Out", guestFirstName, guestLastName);
+                if (rowValues.length > 6) {
+                    String guestFirstName = rowValues[0].toString();
+                    String guestLastName = rowValues[1].toString();
+                    String room = rowValues[2].toString();
+                    String checkIn = rowValues[3].toString();
+                    String checkOut = rowValues[4].toString();
+                    String numAdults = rowValues[5].toString();
+                    String numChildren = rowValues[6].toString();
+
+                    System.out.println("Modifying row: " + Arrays.toString(new String[]{guestFirstName, guestLastName, room, checkIn, checkOut, numAdults, numChildren}));
+
+                    if (updateTable(tableType.equals("CITable") ? 2 : 3, tableType.equals("CITable") ? "Checked In" : "Checked Out", guestFirstName, guestLastName, room, checkIn, checkOut, numAdults, numChildren)) {
+                        System.out.println("Row updated successfully in BT.csv");
+                    } else {
+                        System.out.println("Failed to update row in BT.csv");
+                    }
+                }
+            }
         }
         return button.getText();
     }
 
-    private void updateTable(JTable table, int newStatus, String newState, String guestFirstName, String guestLastName) {
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String firstName = model.getValueAt(i, 0).toString();
-            String lastName = model.getValueAt(i, 1).toString();
-            if (firstName.equals(guestFirstName) && lastName.equals(guestLastName)) {
-                model.setValueAt(newStatus, i, 7);
-                model.setValueAt(newState, i, 8);
+    private boolean updateTable(int newStatus, String newState, String guestFirstName, String guestLastName, String room, String checkIn, String checkOut, String numAdults, String numChildren) {
+        boolean isRowUpdated = false;
+        File inputFile = new File(bookingsfilePath);
+        File tempFile = new File("src/Tables/temp.csv");
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String currentLine;
+            while((currentLine = reader.readLine()) != null) {
+                String[] rowData = currentLine.split(",");
+                if (rowData.length > 6 && rowData[0].trim().equals(guestFirstName) && rowData[1].trim().equals(guestLastName) && rowData[2].trim().equals(room) && rowData[3].trim().equals(checkIn) && rowData[4].trim().equals(checkOut) && rowData[5].trim().equals(numAdults) && rowData[6].trim().equals(numChildren)) {
+                    rowData[7] = String.valueOf(newStatus);
+                    rowData[8] = newState;
+                    currentLine = String.join(",", rowData);
+                    isRowUpdated = true;
+                    System.out.println("Updated row: " + Arrays.toString(rowData));
+                }
+                writer.write(currentLine + System.getProperty("line.separator"));
             }
+            writer.close();
+            reader.close();
+
+            if (!inputFile.delete()) {
+                System.out.println("Could not delete original file");
+                return false;
+            }
+
+            boolean successful = tempFile.renameTo(inputFile);
+            if (!successful) {
+                System.out.println("Could not rename file");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        bookingstableCreator.writeTableDataToCSV(table, bookingsfilePath);
+        return isRowUpdated;
     }
 
     private void filterTableByStatus(JTable table, int status) {

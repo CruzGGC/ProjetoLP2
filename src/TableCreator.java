@@ -10,8 +10,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**TableCreator calss is responsible for handling operastions such as loading, writing table data
+ * to the CSV and retrieving specific data related to the JTable
+   */
 public class TableCreator {
 
+    /**
+     * Writes the data from the JTable into the CSV file.
+     * @param table is the JTable to get the data from.
+     * @param filePath is the path of the CSV file to write the data to.
+     */
     public void writeTableDataToCSV(JTable table, String filePath) {
         try {
             File file = new File(filePath);
@@ -48,6 +56,11 @@ public class TableCreator {
         }
     }
 
+    /**
+     * Loads the data from the CSV file into the JTable.
+     * @param table is the JTable to load the data into.
+     * @param filePath is the path of the CSV file to load the data from.
+     */
     public void loadTableDataFromCSV(JTable table, String filePath) {
         System.out.println("Loading table data from CSV file: " + filePath);
         Vector<String> columnNames = new Vector<>();
@@ -84,6 +97,11 @@ public class TableCreator {
         table.setModel(model);
     }
 
+    /**
+     * Loads Room data from the CSV file into the list of Room objects.
+     * @param filePath is the path of the CSV file to get the data from.
+     * @return A list of Room objects.
+     */
     public List<Room> loadRoomsFromCSV(String filePath) {
         List<Room> rooms = new ArrayList<>();
         try {
@@ -105,6 +123,11 @@ public class TableCreator {
         return rooms;
     }
 
+    /**
+     * Loads Booking data from the CSV file into the list of Booking objects.
+     * @param filePath is the path of the CSV file to get the data from.
+     * @return A list of Booking objects.
+     */
     public List<Booking> loadBookingsFromCSV(String filePath) {
         List<Booking> bookings = new ArrayList<>();
         try {
@@ -129,6 +152,12 @@ public class TableCreator {
         return bookings;
     }
 
+    /**
+     * Retrieves the Room object by its ID from the CSV file.
+     * @param roomId is the ID of the Room to retrieve.
+     * @param filePath is the path of the CSV file to get the data from.
+     * @return A Room object if found, null otherwise.
+     */
     public Room getRoomById(int roomId, String filePath) {
         List<Room> rooms = loadRoomsFromCSV(filePath);
         for (Room room : rooms) {
@@ -139,6 +168,11 @@ public class TableCreator {
         return null;
     }
 
+    /**
+     * Loads check-in data from the CSV file into the DefaultTableModel.
+     * @param filePath is the path of the CSV file to get the data from.
+     * @return A DefaultTableModel containing the check-in data.
+     */
     public DefaultTableModel loadCheckInsFromCSV(String filePath) {
         List<String[]> filteredData = new ArrayList<>();
         try {
@@ -158,7 +192,7 @@ public class TableCreator {
             e.printStackTrace();
         }
 
-        // Create a DefaultTableModel with the filtered data and the specified column names
+        // Creates the DefaultTableModel with the filtered data and the specified column names
 
         return new DefaultTableModel(
                 filteredData.toArray(new String[0][]),
@@ -166,6 +200,11 @@ public class TableCreator {
         );
     }
 
+    /**
+     * Loads check-out data from the CSV file into the DefaultTableModel.
+     * @param filePath is the path of the CSV file to get the data from.
+     * @return A DefaultTableModel containing the check-out data.
+     */
     public DefaultTableModel loadCheckOutsFromCSV(String filePath) {
         List<String[]> filteredData = new ArrayList<>();
         try {
@@ -185,7 +224,7 @@ public class TableCreator {
             e.printStackTrace();
         }
 
-        // Create a DefaultTableModel with the filtered data and the specified column names
+        // Creates the DefaultTableModel with the filtered data and the specified column names
 
         return new DefaultTableModel(
                 filteredData.toArray(new String[0][]),

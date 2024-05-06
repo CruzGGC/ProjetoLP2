@@ -9,14 +9,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * MainUI class is responsible for creating and managing the user interface of the application.
+ * It includes methods for loading data into tables, handling button clicks, and updating the UI based on user interactions.
+ */
 public class MainUI {
 
+    // TableCreators for loading and saving data to CSV files
     private final TableCreator roomtableCreator = new TableCreator();
     private final String roomfilePath = "src/Tables/RT.csv";
 
     private final TableCreator bookingstableCreator = new TableCreator();
     private final String bookingsfilePath = "src/Tables/BT.csv";
 
+    //UI Components
     // Panels
     private JPanel MainPanel, Card, HomePanel, Bookings, Rooms, RoomsCard, RoomTableJP, RoomDetail, RoomDetailList, SaveCancel;
     private JPanel BookingsTableJP, BookingsDetail, BookingsDetailList, Savecancel, BookingsCard, OperationCard, CICOperation;
@@ -47,12 +53,14 @@ public class MainUI {
     private JPanel MainButtons;
     private JPanel SearchFilterJP;
 
+    // Constructor for the MAinUI that inicializes and sets up the way that the buttons respond
     public MainUI() {
 
+        //Load data into tables
         loadCheckInsToTable();
         loadCheckOutsToTable();
 
-        // Assuming comboBox is your JComboBox instance
+        // Set up combo box
         comboBox.addItem("Booked");
         comboBox.addItem("Checked In");
         comboBox.addItem("Checked Out");
@@ -61,6 +69,7 @@ public class MainUI {
         Filter filter = new Filter();
         filter.applyFilters(RNField, ACField, CCField, PField);
 
+        // Set up button actions
         homeButton.addActionListener(e -> {
             switchPanel(HomePanel);
             RoomTable.revalidate();
@@ -71,6 +80,7 @@ public class MainUI {
             loadCheckOutsToTable();
         });
         bookingsButton.addActionListener(e -> {
+
             switchPanel(Bookings);
             RoomTable.revalidate();
             RoomTable.repaint();
@@ -274,6 +284,10 @@ public class MainUI {
                         BookingsTable.setValueAt("Booked", selectedRow, 8);
                         bookingstableCreator.writeTableDataToCSV(BookingsTable, bookingsfilePath);
                         switchPanel(BookingsTableJP);
+                        BookingsTable.revalidate();
+                        BookingsTable.repaint();
+
+
                     }
                 } else {
                     // If no row has been selected, show a message dialog
@@ -329,6 +343,10 @@ public class MainUI {
 
     }
 
+    /**
+     * Switches the visible panel in the Card layout.
+     * @param panel It is to make visible.
+     */
     private void switchPanel(JPanel panel) {
         Card.removeAll();
         Card.add(panel);
@@ -381,14 +399,27 @@ public class MainUI {
         return (value != null) ? value.toString() : "";
     }
 
+
+    /**
+     * Returns the main panel of the UI.
+     * @return The main panel.
+     */
     public JPanel getMainPanel() {
         return MainPanel;
     }
 
+    /**
+     * Returns the room table.
+     * @return The room table.
+     */
     public JTable getRoomTable() {
         return RoomTable;
     }
 
+    /**
+     * Returns the bookings table.
+     * @return The bookings table.
+     */
     public JTable getBookingsTable() {
         return BookingsTable;
     }

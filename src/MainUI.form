@@ -452,7 +452,9 @@
                     <constraints>
                       <card name="Card1"/>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <enabled value="true"/>
+                    </properties>
                     <border type="none"/>
                     <children>
                       <scrollpane id="7ee14" binding="TBScrollPane">

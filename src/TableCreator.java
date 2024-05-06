@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -20,9 +19,9 @@ public class TableCreator {
      * @param table is the JTable to get the data from.
      * @param filePath is the path of the CSV file to write the data to.
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public void writeTableDataToCSV(JTable table, String filePath) {
         try {
-            File file = new File(filePath);
             FileWriter csvWriter = new FileWriter(filePath);
 
             // Write column names
@@ -61,6 +60,7 @@ public class TableCreator {
      * @param table is the JTable to load the data into.
      * @param filePath is the path of the CSV file to load the data from.
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public void loadTableDataFromCSV(JTable table, String filePath) {
         System.out.println("Loading table data from CSV file: " + filePath);
         Vector<String> columnNames = new Vector<>();

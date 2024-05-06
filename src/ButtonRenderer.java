@@ -1,8 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * ButtonRenderer class is responsible for rendering the button in the table cell.

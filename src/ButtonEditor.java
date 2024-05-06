@@ -104,6 +104,7 @@ public class ButtonEditor extends DefaultCellEditor {
      * @param numChildren The number of children.
      * @return True if the row was updated successfully; otherwise false.
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private boolean updateTable(int newStatus, String newState, String guestFirstName, String guestLastName, String room, String checkIn, String checkOut, String numAdults, String numChildren) {
         boolean isRowUpdated = false;
         File inputFile = new File(bookingsfilePath);
@@ -123,7 +124,7 @@ public class ButtonEditor extends DefaultCellEditor {
                     isRowUpdated = true;
                     System.out.println("Updated row: " + Arrays.toString(rowData));
                 }
-                writer.write(currentLine + System.getProperty("line.separator"));
+                writer.write(currentLine + System.lineSeparator());
             }
             writer.close();
             reader.close();

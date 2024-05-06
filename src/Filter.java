@@ -4,7 +4,14 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+//THis class is used to apply filters to the JTextFields inputs
 public class Filter {
+
+    /**
+     * Applies the regex filter to a JTextField.
+     * @param field The JTextField to apply the filter to.
+     * @param regex The regex pattern to use for the filter.
+     */
     private void applyFilter(JTextField field, String regex) {
         ((AbstractDocument) field.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
@@ -23,6 +30,17 @@ public class Filter {
         });
     }
 
+    /**
+     * Applies filters to all the JTextFields in the UI.
+     * @param RNField The room number JTextField.
+     * @param ACField The adult count JTextField.
+     * @param CCField The child count JTextField.
+     * @param PField The price JTextField.
+     * @param AField The adult count JTextField.
+     * @param CField The child count JTextField.
+     * @param FNField The first name JTextField.
+     * @param LNField The last name JTextField.
+     */
     public void applyFilters(JTextField RNField, JTextField ACField, JTextField CCField, JTextField PField, JTextField AField, JTextField CField, JTextField FNField, JTextField LNField) {
         String numberRegex = "\\d*";
         String decimalNumberRegex = "\\d*\\.?\\d*";
